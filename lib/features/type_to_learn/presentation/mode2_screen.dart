@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +26,8 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
   late FocusNode _inputFocus;
   final List<_WordStatus> _wordStatuses = [];
   final _scrollCtrl = ScrollController();
+  int _elapsedSeconds = 0;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -38,6 +41,7 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
     _inputCtrl.dispose();
     _inputFocus.dispose();
     _scrollCtrl.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -65,7 +69,14 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
       _wordStatuses.add(_WordStatus(word: w));
     }
     _currentWordIndex = 0;
+    _elapsedSeconds = 0;
+    _timer?.cancel();
     setState(() => _started = true);
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() => _elapsedSeconds++);
+      }
+    });
   }
 
   void _onSubmit(String text) {
@@ -94,8 +105,15 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
 
     // Check if done
     if (_currentWordIndex >= _paragraphWords.length) {
+      _timer?.cancel();
       _showResults();
     }
+  }
+
+  String _formatTime(int seconds) {
+    final minutes = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
   void _showResults() {
@@ -109,7 +127,8 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
         title: const Text('Completed!'),
         content: Text('All ${_paragraphWords.length} words typed correctly!\n'
             'Mistakes: $wrongWords words needed extra attempts\n'
-            'Total attempts: $totalAttempts'),
+            'Total attempts: $totalAttempts\n'
+            'Time: ${_formatTime(_elapsedSeconds)}'),
         actions: [
           FilledButton(
             onPressed: () {
@@ -200,8 +219,15 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
           value: _currentWordIndex / _paragraphWords.length,
         ),
         const SizedBox(height: 8),
-        Text('$_currentWordIndex / ${_paragraphWords.length} words',
-            style: theme.textTheme.bodySmall),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('$_currentWordIndex / ${_paragraphWords.length} words',
+                style: theme.textTheme.bodySmall),
+            Text('Time: ${_formatTime(_elapsedSeconds)}',
+                style: theme.textTheme.bodySmall),
+          ],
+        ),
         const SizedBox(height: 16),
         // Paragraph display
         Expanded(
@@ -276,7 +302,10 @@ class _Mode2ScreenState extends ConsumerState<Mode2Screen> {
             ),
             const SizedBox(width: 8),
             TextButton(
-              onPressed: () => setState(() => _started = false),
+              onPressed: () {
+                _timer?.cancel();
+                setState(() => _started = false);
+              },
               child: const Text('Stop'),
             ),
           ],

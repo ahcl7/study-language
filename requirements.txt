@@ -1,0 +1,30 @@
+- Chương trình Flutter học ngôn ngữ (focus tiếng Anh và tiếng Nhật trên windows 11, nếu hỗ trợ đa nền tảng thì càng tốt)
+- Mục đích là để học từ vựng và ngữ pháp
+- Có thể thêm được group từ vựng
+- Mỗi group có thể chứa nhiều từ vựng
+- Có thể thêm được lớp
+- Mỗi lớp có thể chứa nhiều group từ vựng
+- Có tính năng thêm từ vựng:
+    + Tên từ vựng
+    + Loại từ (1 từ vựng có thể nằm trong nhiều loại từ)
+    + Nghĩa của từ vựng
+    + Ví dụ về từ vựng
+    + Hình ảnh minh họa
+
+- Cho phép học từ vựng theo từng lớp (flash card)
+- Cho phép học từ vựng theo từng group (flash card)
+- Cho phép học từ vựng theo từng loại từ (flash card)
+
+- Cho phép luyện tập từ vựng theo từng lớp, group, loại từ (trắc nghiệm, hoặc điều vào chỗ trống)
+- Có thêm một chế độ để luyện tập nữa gọi là "type to learn" (gõ để học)
+ + mode1: 
+    -gõ từng từ vựng. cho phép người dùng chọn các từ để học (theo lớp, group hoặc loại từ). Chương trình sẽ hiện nhiều từ cùng 1 lúc trên màn hình. các từ này ngẫu nhiên từ phía bên phải màn hình di chuyển như mây trôi vào phía bên trái màn hình. 
+    -Người dùng gõ đúng thì từ đó sẽ biến mất.
+ + mode2: gõ đoạn văn. cho phép người dùng tạo các đoạn văn theo lớp (chỉ cho phép theo lớp thôi).Người dùng bắt buộc phải gõ đúng từng từ vựng trong đoạn văn theo thứ tự từ đầu đến cuối. 
+
+ + tất cả dữ liệu phải được lưu ở local (sqlite) và có thể backup ra file json và restore từ file json.
+ + chương trình cần có giao diện đẹp, hiện đại, dễ sử dụng. 
+ + cho phép người dùng thay đổi font size, font chữ, màu sắc, theme (light/dark).
+ + Khuyến khích sử dụng clean architure để triển khai 
++ Nên có tính năng login/logout để ngăn người dùng khác sử dụng máy tính của mình để học. 
++ Nếu có thể thì triển khai làm sao để có thể dễ dàng porting qua android và ios (clean architecture prefered)
