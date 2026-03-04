@@ -142,6 +142,7 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
 
     final fw = _FloatingWord(
       word: word,
+      showMeaning: rng.nextBool(),
       yPosition: rng.nextDouble() * 600,
       verticalOffset: 30.0 + rng.nextDouble() * 40,
       verticalSpeed: 0.5 + rng.nextDouble() * 1.0,
@@ -196,7 +197,7 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
     final typed = text.trim().replaceAll(' ', '').toLowerCase();
     if (typed.isEmpty) return;
 
-    // Always match against pendingWords
+    // Always match against word name (vocabulary), regardless of what the cloud shows.
     Word? matchedPending;
     for (final w in _pendingWords) {
       if (w.name.replaceAll(' ', '').toLowerCase() == typed) {
@@ -411,9 +412,12 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
                   final y = (fw.yPosition + verticalBob)
                       .clamp(0.0, constraints.maxHeight - 60);
 
-                  // Calculate cloud size based on word length
-                  final wordLength = fw.word.name.length;
-                  final cloudWidth = (200 + wordLength * 22).toDouble();
+                  // Calculate cloud size based on displayed text length
+                  final displayText =
+                      fw.showMeaning ? fw.word.meaning : fw.word.name;
+                  final cloudWidth = (200 + displayText.length * 10)
+                      .toDouble()
+                      .clamp(220.0, 420.0);
                   final cloudHeight =
                       cloudWidth / 2.0; // Maintain 2:1 aspect ratio
 
@@ -436,15 +440,17 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
                             // 📝 Text nằm dưới + center ngang
                             Positioned(
                               bottom: cloudHeight * 0.25, // chỉnh % tuỳ bạn
-                              left: 0,
-                              right: 0,
+                              left: 8,
+                              right: 8,
                               child: Text(
-                                fw.word.name,
+                                fw.showMeaning ? fw.word.meaning : fw.word.name,
                                 textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurface,
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 22,
+                                  fontSize: fw.showMeaning ? 16 : 22,
                                 ),
                               ),
                             ),
@@ -463,7 +469,7 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
             controller: _inputCtrl,
             focusNode: _inputFocus,
             decoration: const InputDecoration(
-              hintText: 'Type the word and press Enter...',
+              hintText: 'Type the vocabulary and press Enter...',
               prefixIcon: Icon(Icons.keyboard),
             ),
             onSubmitted: _onSubmit,
@@ -477,6 +483,7 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
 
 class _FloatingWord {
   final Word word;
+  final bool showMeaning;
   final double yPosition;
   final double verticalOffset;
   final double verticalSpeed;
@@ -486,6 +493,7 @@ class _FloatingWord {
 
   _FloatingWord({
     required this.word,
+    required this.showMeaning,
     required this.yPosition,
     required this.verticalOffset,
     required this.verticalSpeed,
