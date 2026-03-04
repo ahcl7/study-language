@@ -43,15 +43,15 @@ class _PracticeConfigScreenState extends ConsumerState<PracticeConfigScreen> {
     String title;
     switch (_filterType) {
       case 'class':
-        words = await db.getWordsByClass(_selectedId!);
+        words = await db.getActiveWordsByClass(_selectedId!);
         title = _classes.firstWhere((c) => c.id == _selectedId!).name;
         break;
       case 'group':
-        words = await db.getWordsByGroup(_selectedId!);
+        words = await db.getActiveWordsByGroup(_selectedId!);
         title = _groups.firstWhere((g) => g.id == _selectedId!).name;
         break;
       case 'type':
-        words = await db.getWordsByType(_selectedId!);
+        words = await db.getActiveWordsByType(_selectedId!);
         title = _wordTypes.firstWhere((t) => t.id == _selectedId!).name;
         break;
       default:

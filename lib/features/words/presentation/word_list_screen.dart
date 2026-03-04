@@ -32,6 +32,12 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
     });
   }
 
+  Future<void> _toggleActive(Word word) async {
+    final db = ref.read(databaseProvider);
+    await db.setWordActive(word.id, isActive: !word.isActive);
+    _loadWords();
+  }
+
   @override
   Widget build(BuildContext context) {
     final db = ref.watch(databaseProvider);
@@ -78,12 +84,35 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                     final word = _words[index];
                     return Card(
                       child: ListTile(
-                        title: Text(word.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold)),
-                        subtitle: Text(word.meaning,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis),
+                        leading: Tooltip(
+                          message: word.isActive ? 'Active' : 'Deactivated',
+                          child: Switch(
+                            value: word.isActive,
+                            onChanged: (_) => _toggleActive(word),
+                          ),
+                        ),
+                        title: Text(
+                          word.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: word.isActive
+                                ? null
+                                : theme.colorScheme.outline,
+                            decoration: word.isActive
+                                ? null
+                                : TextDecoration.lineThrough,
+                          ),
+                        ),
+                        subtitle: Text(
+                          word.meaning,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: word.isActive
+                                ? null
+                                : theme.colorScheme.outline,
+                          ),
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

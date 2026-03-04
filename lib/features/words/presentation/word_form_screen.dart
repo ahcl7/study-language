@@ -90,6 +90,7 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
         meaning: _meaningCtrl.text.trim(),
         example: _exampleCtrl.text.trim(),
         imagePath: _imagePath,
+        isActive: _existing!.isActive,
         createdAt: _existing!.createdAt,
       ));
       wordId = _existing!.id;

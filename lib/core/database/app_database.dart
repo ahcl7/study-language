@@ -41,6 +41,7 @@ class Words extends Table {
   TextColumn get meaning => text()();
   TextColumn get example => text().withDefault(const Constant(''))();
   TextColumn get imagePath => text().nullable()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
@@ -86,10 +87,15 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 2) {
+            await m.addColumn(words, words.isActive);
+          }
+        },
         onCreate: (Migrator m) async {
           await m.createAll();
           // Seed default word types
@@ -173,6 +179,10 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteWord(Word w) => delete(words).delete(w);
 
+  Future<void> setWordActive(int wordId, {required bool isActive}) =>
+      (update(words)..where((w) => w.id.equals(wordId)))
+          .write(WordsCompanion(isActive: Value(isActive)));
+
   // ─── Word-Group link queries ───
 
   Future<void> linkWordToGroup(int wordId, int groupId) =>
@@ -197,12 +207,31 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.readTable(words)).get();
   }
 
+  Future<List<Word>> getActiveWordsByGroup(int groupId) {
+    final query = select(words).join([
+      innerJoin(wordGroupLinks, wordGroupLinks.wordId.equalsExp(words.id)),
+    ])
+      ..where(
+          wordGroupLinks.groupId.equals(groupId) & words.isActive.equals(true));
+    return query.map((row) => row.readTable(words)).get();
+  }
+
   Future<List<Word>> getWordsByClass(int classId) {
     final query = select(words).join([
       innerJoin(wordGroupLinks, wordGroupLinks.wordId.equalsExp(words.id)),
       innerJoin(groups, groups.id.equalsExp(wordGroupLinks.groupId)),
     ])
       ..where(groups.classId.equals(classId));
+    return query.map((row) => row.readTable(words)).get();
+  }
+
+  Future<List<Word>> getActiveWordsByClass(int classId) {
+    final query = select(words).join([
+      innerJoin(wordGroupLinks, wordGroupLinks.wordId.equalsExp(words.id)),
+      innerJoin(groups, groups.id.equalsExp(wordGroupLinks.groupId)),
+    ])
+      ..where(
+          groups.classId.equals(classId) & words.isActive.equals(true));
     return query.map((row) => row.readTable(words)).get();
   }
 
@@ -235,6 +264,15 @@ class AppDatabase extends _$AppDatabase {
       innerJoin(wordTypeLinks, wordTypeLinks.wordId.equalsExp(words.id)),
     ])
       ..where(wordTypeLinks.typeId.equals(typeId));
+    return query.map((row) => row.readTable(words)).get();
+  }
+
+  Future<List<Word>> getActiveWordsByType(int typeId) {
+    final query = select(words).join([
+      innerJoin(wordTypeLinks, wordTypeLinks.wordId.equalsExp(words.id)),
+    ])
+      ..where(
+          wordTypeLinks.typeId.equals(typeId) & words.isActive.equals(true));
     return query.map((row) => row.readTable(words)).get();
   }
 
@@ -305,6 +343,7 @@ class AppDatabase extends _$AppDatabase {
                 'meaning': w.meaning,
                 'example': w.example,
                 'imagePath': w.imagePath,
+                'isActive': w.isActive,
                 'createdAt': w.createdAt.toIso8601String(),
               })
           .toList(),
@@ -382,6 +421,7 @@ class AppDatabase extends _$AppDatabase {
           meaning: w['meaning'] as String,
           example: Value(w['example'] as String? ?? ''),
           imagePath: Value(w['imagePath'] as String?),
+          isActive: Value(w['isActive'] as bool? ?? true),
         ));
       }
 

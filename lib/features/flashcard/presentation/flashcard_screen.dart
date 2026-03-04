@@ -45,13 +45,13 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
     List<Word> words;
     switch (_filterType) {
       case 'class':
-        words = await db.getWordsByClass(_selectedId!);
+        words = await db.getActiveWordsByClass(_selectedId!);
         break;
       case 'group':
-        words = await db.getWordsByGroup(_selectedId!);
+        words = await db.getActiveWordsByGroup(_selectedId!);
         break;
       case 'type':
-        words = await db.getWordsByType(_selectedId!);
+        words = await db.getActiveWordsByType(_selectedId!);
         break;
       default:
         words = [];

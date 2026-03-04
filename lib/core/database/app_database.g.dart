@@ -1008,6 +1008,16 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
   late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
       'image_path', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _isActiveMeta =
+      const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(true));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -1018,7 +1028,7 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
       defaultValue: currentDateAndTime);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, meaning, example, imagePath, createdAt];
+      [id, name, meaning, example, imagePath, isActive, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1052,6 +1062,10 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
       context.handle(_imagePathMeta,
           imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta));
     }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -1075,6 +1089,8 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
           .read(DriftSqlType.string, data['${effectivePrefix}example'])!,
       imagePath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_path']),
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -1092,6 +1108,7 @@ class Word extends DataClass implements Insertable<Word> {
   final String meaning;
   final String example;
   final String? imagePath;
+  final bool isActive;
   final DateTime createdAt;
   const Word(
       {required this.id,
@@ -1099,6 +1116,7 @@ class Word extends DataClass implements Insertable<Word> {
       required this.meaning,
       required this.example,
       this.imagePath,
+      required this.isActive,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1110,6 +1128,7 @@ class Word extends DataClass implements Insertable<Word> {
     if (!nullToAbsent || imagePath != null) {
       map['image_path'] = Variable<String>(imagePath);
     }
+    map['is_active'] = Variable<bool>(isActive);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -1123,6 +1142,7 @@ class Word extends DataClass implements Insertable<Word> {
       imagePath: imagePath == null && nullToAbsent
           ? const Value.absent()
           : Value(imagePath),
+      isActive: Value(isActive),
       createdAt: Value(createdAt),
     );
   }
@@ -1136,6 +1156,7 @@ class Word extends DataClass implements Insertable<Word> {
       meaning: serializer.fromJson<String>(json['meaning']),
       example: serializer.fromJson<String>(json['example']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -1148,6 +1169,7 @@ class Word extends DataClass implements Insertable<Word> {
       'meaning': serializer.toJson<String>(meaning),
       'example': serializer.toJson<String>(example),
       'imagePath': serializer.toJson<String?>(imagePath),
+      'isActive': serializer.toJson<bool>(isActive),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -1158,6 +1180,7 @@ class Word extends DataClass implements Insertable<Word> {
           String? meaning,
           String? example,
           Value<String?> imagePath = const Value.absent(),
+          bool? isActive,
           DateTime? createdAt}) =>
       Word(
         id: id ?? this.id,
@@ -1165,6 +1188,7 @@ class Word extends DataClass implements Insertable<Word> {
         meaning: meaning ?? this.meaning,
         example: example ?? this.example,
         imagePath: imagePath.present ? imagePath.value : this.imagePath,
+        isActive: isActive ?? this.isActive,
         createdAt: createdAt ?? this.createdAt,
       );
   Word copyWithCompanion(WordsCompanion data) {
@@ -1174,6 +1198,7 @@ class Word extends DataClass implements Insertable<Word> {
       meaning: data.meaning.present ? data.meaning.value : this.meaning,
       example: data.example.present ? data.example.value : this.example,
       imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -1186,6 +1211,7 @@ class Word extends DataClass implements Insertable<Word> {
           ..write('meaning: $meaning, ')
           ..write('example: $example, ')
           ..write('imagePath: $imagePath, ')
+          ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -1193,7 +1219,7 @@ class Word extends DataClass implements Insertable<Word> {
 
   @override
   int get hashCode =>
-      Object.hash(id, name, meaning, example, imagePath, createdAt);
+      Object.hash(id, name, meaning, example, imagePath, isActive, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1203,6 +1229,7 @@ class Word extends DataClass implements Insertable<Word> {
           other.meaning == this.meaning &&
           other.example == this.example &&
           other.imagePath == this.imagePath &&
+          other.isActive == this.isActive &&
           other.createdAt == this.createdAt);
 }
 
@@ -1212,6 +1239,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
   final Value<String> meaning;
   final Value<String> example;
   final Value<String?> imagePath;
+  final Value<bool> isActive;
   final Value<DateTime> createdAt;
   const WordsCompanion({
     this.id = const Value.absent(),
@@ -1219,6 +1247,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
     this.meaning = const Value.absent(),
     this.example = const Value.absent(),
     this.imagePath = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   WordsCompanion.insert({
@@ -1227,6 +1256,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
     required String meaning,
     this.example = const Value.absent(),
     this.imagePath = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
   })  : name = Value(name),
         meaning = Value(meaning);
@@ -1236,6 +1266,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
     Expression<String>? meaning,
     Expression<String>? example,
     Expression<String>? imagePath,
+    Expression<bool>? isActive,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -1244,6 +1275,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
       if (meaning != null) 'meaning': meaning,
       if (example != null) 'example': example,
       if (imagePath != null) 'image_path': imagePath,
+      if (isActive != null) 'is_active': isActive,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -1254,6 +1286,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
       Value<String>? meaning,
       Value<String>? example,
       Value<String?>? imagePath,
+      Value<bool>? isActive,
       Value<DateTime>? createdAt}) {
     return WordsCompanion(
       id: id ?? this.id,
@@ -1261,6 +1294,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
       meaning: meaning ?? this.meaning,
       example: example ?? this.example,
       imagePath: imagePath ?? this.imagePath,
+      isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -1283,6 +1317,9 @@ class WordsCompanion extends UpdateCompanion<Word> {
     if (imagePath.present) {
       map['image_path'] = Variable<String>(imagePath.value);
     }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1297,6 +1334,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
           ..write('meaning: $meaning, ')
           ..write('example: $example, ')
           ..write('imagePath: $imagePath, ')
+          ..write('isActive: $isActive, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -3004,6 +3042,7 @@ typedef $$WordsTableCreateCompanionBuilder = WordsCompanion Function({
   required String meaning,
   Value<String> example,
   Value<String?> imagePath,
+  Value<bool> isActive,
   Value<DateTime> createdAt,
 });
 typedef $$WordsTableUpdateCompanionBuilder = WordsCompanion Function({
@@ -3012,6 +3051,7 @@ typedef $$WordsTableUpdateCompanionBuilder = WordsCompanion Function({
   Value<String> meaning,
   Value<String> example,
   Value<String?> imagePath,
+  Value<bool> isActive,
   Value<DateTime> createdAt,
 });
 
@@ -3072,6 +3112,9 @@ class $$WordsTableFilterComposer extends Composer<_$AppDatabase, $WordsTable> {
 
   ColumnFilters<String> get imagePath => $composableBuilder(
       column: $table.imagePath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+      column: $table.isActive, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -3143,6 +3186,9 @@ class $$WordsTableOrderingComposer
   ColumnOrderings<String> get imagePath => $composableBuilder(
       column: $table.imagePath, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+      column: $table.isActive, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 }
@@ -3170,6 +3216,9 @@ class $$WordsTableAnnotationComposer
 
   GeneratedColumn<String> get imagePath =>
       $composableBuilder(column: $table.imagePath, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3245,6 +3294,7 @@ class $$WordsTableTableManager extends RootTableManager<
             Value<String> meaning = const Value.absent(),
             Value<String> example = const Value.absent(),
             Value<String?> imagePath = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               WordsCompanion(
@@ -3253,6 +3303,7 @@ class $$WordsTableTableManager extends RootTableManager<
             meaning: meaning,
             example: example,
             imagePath: imagePath,
+            isActive: isActive,
             createdAt: createdAt,
           ),
           createCompanionCallback: ({
@@ -3261,6 +3312,7 @@ class $$WordsTableTableManager extends RootTableManager<
             required String meaning,
             Value<String> example = const Value.absent(),
             Value<String?> imagePath = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               WordsCompanion.insert(
@@ -3269,6 +3321,7 @@ class $$WordsTableTableManager extends RootTableManager<
             meaning: meaning,
             example: example,
             imagePath: imagePath,
+            isActive: isActive,
             createdAt: createdAt,
           ),
           withReferenceMapper: (p0) => p0
