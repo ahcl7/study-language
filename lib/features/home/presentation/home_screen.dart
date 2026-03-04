@@ -44,6 +44,12 @@ class HomeScreen extends ConsumerWidget {
                 onTap: () => context.push('/classes'),
               ),
               _NavCard(
+                icon: Icons.drive_file_move_outline,
+                title: 'Move Words',
+                subtitle: 'Search words and move them to groups',
+                onTap: () => context.push('/words/manage'),
+              ),
+              _NavCard(
                 icon: Icons.article,
                 title: 'Paragraphs',
                 subtitle: 'Create paragraphs for typing practice',

@@ -11,6 +11,7 @@ import '../../features/groups/presentation/group_list_screen.dart';
 import '../../features/groups/presentation/group_form_screen.dart';
 import '../../features/words/presentation/word_list_screen.dart';
 import '../../features/words/presentation/word_form_screen.dart';
+import '../../features/words/presentation/word_manage_screen.dart';
 import '../../features/flashcard/presentation/flashcard_screen.dart';
 import '../../features/practice/presentation/practice_config_screen.dart';
 import '../../features/practice/presentation/mcq_screen.dart';
@@ -92,6 +93,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           final groupId = int.parse(state.pathParameters['groupId']!);
           return WordListScreen(groupId: groupId);
         },
+      ),
+      GoRoute(
+        path: '/words/manage',
+        builder: (context, state) => const WordManageScreen(),
       ),
       GoRoute(
         path: '/words/new',
