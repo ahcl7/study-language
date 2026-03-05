@@ -48,6 +48,7 @@ class Words extends Table {
 class WordGroupLinks extends Table {
   IntColumn get wordId => integer().references(Words, #id)();
   IntColumn get groupId => integer().references(Groups, #id)();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {wordId, groupId};
@@ -87,13 +88,16 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (Migrator m, int from, int to) async {
           if (from < 2) {
             await m.addColumn(words, words.isActive);
+          }
+          if (from < 3) {
+            await m.addColumn(wordGroupLinks, wordGroupLinks.sortOrder);
           }
         },
         onCreate: (Migrator m) async {
@@ -185,11 +189,46 @@ class AppDatabase extends _$AppDatabase {
 
   // ─── Word-Group link queries ───
 
-  Future<void> linkWordToGroup(int wordId, int groupId) =>
-      into(wordGroupLinks).insert(
-        WordGroupLinksCompanion.insert(wordId: wordId, groupId: groupId),
-        mode: InsertMode.insertOrIgnore,
-      );
+  Future<void> linkWordToGroup(int wordId, int groupId) async {
+    // Assign next sort order within the group
+    final existing = await (select(wordGroupLinks)
+          ..where((l) => l.groupId.equals(groupId)))
+        .get();
+    final nextOrder = existing.isEmpty
+        ? 0
+        : existing.map((e) => e.sortOrder).reduce((a, b) => a > b ? a : b) + 1;
+    await into(wordGroupLinks).insert(
+      WordGroupLinksCompanion.insert(
+        wordId: wordId,
+        groupId: groupId,
+        sortOrder: Value(nextOrder),
+      ),
+      mode: InsertMode.insertOrIgnore,
+    );
+  }
+
+  Future<void> updateWordSortOrderInGroup(
+      int wordId, int groupId, int sortOrder) async {
+    await (update(wordGroupLinks)
+          ..where(
+              (l) => l.wordId.equals(wordId) & l.groupId.equals(groupId)))
+        .write(WordGroupLinksCompanion(sortOrder: Value(sortOrder)));
+  }
+
+  /// Swap sort orders of two words inside a group.
+  Future<void> swapWordSortOrders(
+      int wordIdA, int wordIdB, int groupId) async {
+    final rows = await (select(wordGroupLinks)
+          ..where((l) =>
+              l.groupId.equals(groupId) &
+              (l.wordId.equals(wordIdA) | l.wordId.equals(wordIdB))))
+        .get();
+    if (rows.length != 2) return;
+    final orderA = rows.firstWhere((r) => r.wordId == wordIdA).sortOrder;
+    final orderB = rows.firstWhere((r) => r.wordId == wordIdB).sortOrder;
+    await updateWordSortOrderInGroup(wordIdA, groupId, orderB);
+    await updateWordSortOrderInGroup(wordIdB, groupId, orderA);
+  }
 
   Future<void> unlinkWordFromGroup(int wordId, int groupId) =>
       (delete(wordGroupLinks)
@@ -203,7 +242,8 @@ class AppDatabase extends _$AppDatabase {
     final query = select(words).join([
       innerJoin(wordGroupLinks, wordGroupLinks.wordId.equalsExp(words.id)),
     ])
-      ..where(wordGroupLinks.groupId.equals(groupId));
+      ..where(wordGroupLinks.groupId.equals(groupId))
+      ..orderBy([OrderingTerm.asc(wordGroupLinks.sortOrder)]);
     return query.map((row) => row.readTable(words)).get();
   }
 
@@ -348,7 +388,7 @@ class AppDatabase extends _$AppDatabase {
               })
           .toList(),
       'wordGroupLinks': (await select(wordGroupLinks).get())
-          .map((l) => {'wordId': l.wordId, 'groupId': l.groupId})
+          .map((l) => {'wordId': l.wordId, 'groupId': l.groupId, 'sortOrder': l.sortOrder})
           .toList(),
       'wordTypeLinks': (await select(wordTypeLinks).get())
           .map((l) => {'wordId': l.wordId, 'typeId': l.typeId})
@@ -431,6 +471,7 @@ class AppDatabase extends _$AppDatabase {
           WordGroupLinksCompanion.insert(
             wordId: l['wordId'] as int,
             groupId: l['groupId'] as int,
+            sortOrder: Value(l['sortOrder'] as int? ?? 0),
           ),
           mode: InsertMode.insertOrIgnore,
         );

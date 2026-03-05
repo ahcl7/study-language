@@ -38,6 +38,16 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
     _loadWords();
   }
 
+  Future<void> _reorder(int index, int direction) async {
+    // direction: -1 = move up, +1 = move down
+    final newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= _words.length) return;
+    final db = ref.read(databaseProvider);
+    await db.swapWordSortOrders(
+        _words[index].id, _words[newIndex].id, widget.groupId);
+    await _loadWords();
+  }
+
   @override
   Widget build(BuildContext context) {
     final db = ref.watch(databaseProvider);
@@ -116,6 +126,20 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            IconButton(
+                              tooltip: 'Move up',
+                              icon: const Icon(Icons.arrow_upward, size: 20),
+                              onPressed: index == 0
+                                  ? null
+                                  : () => _reorder(index, -1),
+                            ),
+                            IconButton(
+                              tooltip: 'Move down',
+                              icon: const Icon(Icons.arrow_downward, size: 20),
+                              onPressed: index == _words.length - 1
+                                  ? null
+                                  : () => _reorder(index, 1),
+                            ),
                             IconButton(
                               icon: const Icon(Icons.edit),
                               onPressed: () async {

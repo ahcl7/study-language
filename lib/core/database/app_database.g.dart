@@ -1015,8 +1015,8 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
       'is_active', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_active" IN (0, 1))'),
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
@@ -1364,8 +1364,16 @@ class $WordGroupLinksTable extends WordGroupLinks
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES "groups" (id)'));
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
   @override
-  List<GeneratedColumn> get $columns => [wordId, groupId];
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [wordId, groupId, sortOrder];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1388,6 +1396,10 @@ class $WordGroupLinksTable extends WordGroupLinks
     } else if (isInserting) {
       context.missing(_groupIdMeta);
     }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
     return context;
   }
 
@@ -1401,6 +1413,8 @@ class $WordGroupLinksTable extends WordGroupLinks
           .read(DriftSqlType.int, data['${effectivePrefix}word_id'])!,
       groupId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}group_id'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
     );
   }
 
@@ -1413,12 +1427,15 @@ class $WordGroupLinksTable extends WordGroupLinks
 class WordGroupLink extends DataClass implements Insertable<WordGroupLink> {
   final int wordId;
   final int groupId;
-  const WordGroupLink({required this.wordId, required this.groupId});
+  final int sortOrder;
+  const WordGroupLink(
+      {required this.wordId, required this.groupId, required this.sortOrder});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['word_id'] = Variable<int>(wordId);
     map['group_id'] = Variable<int>(groupId);
+    map['sort_order'] = Variable<int>(sortOrder);
     return map;
   }
 
@@ -1426,6 +1443,7 @@ class WordGroupLink extends DataClass implements Insertable<WordGroupLink> {
     return WordGroupLinksCompanion(
       wordId: Value(wordId),
       groupId: Value(groupId),
+      sortOrder: Value(sortOrder),
     );
   }
 
@@ -1435,6 +1453,7 @@ class WordGroupLink extends DataClass implements Insertable<WordGroupLink> {
     return WordGroupLink(
       wordId: serializer.fromJson<int>(json['wordId']),
       groupId: serializer.fromJson<int>(json['groupId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
     );
   }
   @override
@@ -1443,17 +1462,21 @@ class WordGroupLink extends DataClass implements Insertable<WordGroupLink> {
     return <String, dynamic>{
       'wordId': serializer.toJson<int>(wordId),
       'groupId': serializer.toJson<int>(groupId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
     };
   }
 
-  WordGroupLink copyWith({int? wordId, int? groupId}) => WordGroupLink(
+  WordGroupLink copyWith({int? wordId, int? groupId, int? sortOrder}) =>
+      WordGroupLink(
         wordId: wordId ?? this.wordId,
         groupId: groupId ?? this.groupId,
+        sortOrder: sortOrder ?? this.sortOrder,
       );
   WordGroupLink copyWithCompanion(WordGroupLinksCompanion data) {
     return WordGroupLink(
       wordId: data.wordId.present ? data.wordId.value : this.wordId,
       groupId: data.groupId.present ? data.groupId.value : this.groupId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
     );
   }
 
@@ -1461,53 +1484,64 @@ class WordGroupLink extends DataClass implements Insertable<WordGroupLink> {
   String toString() {
     return (StringBuffer('WordGroupLink(')
           ..write('wordId: $wordId, ')
-          ..write('groupId: $groupId')
+          ..write('groupId: $groupId, ')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(wordId, groupId);
+  int get hashCode => Object.hash(wordId, groupId, sortOrder);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is WordGroupLink &&
           other.wordId == this.wordId &&
-          other.groupId == this.groupId);
+          other.groupId == this.groupId &&
+          other.sortOrder == this.sortOrder);
 }
 
 class WordGroupLinksCompanion extends UpdateCompanion<WordGroupLink> {
   final Value<int> wordId;
   final Value<int> groupId;
+  final Value<int> sortOrder;
   final Value<int> rowid;
   const WordGroupLinksCompanion({
     this.wordId = const Value.absent(),
     this.groupId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   WordGroupLinksCompanion.insert({
     required int wordId,
     required int groupId,
+    this.sortOrder = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : wordId = Value(wordId),
         groupId = Value(groupId);
   static Insertable<WordGroupLink> custom({
     Expression<int>? wordId,
     Expression<int>? groupId,
+    Expression<int>? sortOrder,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (wordId != null) 'word_id': wordId,
       if (groupId != null) 'group_id': groupId,
+      if (sortOrder != null) 'sort_order': sortOrder,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   WordGroupLinksCompanion copyWith(
-      {Value<int>? wordId, Value<int>? groupId, Value<int>? rowid}) {
+      {Value<int>? wordId,
+      Value<int>? groupId,
+      Value<int>? sortOrder,
+      Value<int>? rowid}) {
     return WordGroupLinksCompanion(
       wordId: wordId ?? this.wordId,
       groupId: groupId ?? this.groupId,
+      sortOrder: sortOrder ?? this.sortOrder,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1521,6 +1555,9 @@ class WordGroupLinksCompanion extends UpdateCompanion<WordGroupLink> {
     if (groupId.present) {
       map['group_id'] = Variable<int>(groupId.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1532,6 +1569,7 @@ class WordGroupLinksCompanion extends UpdateCompanion<WordGroupLink> {
     return (StringBuffer('WordGroupLinksCompanion(')
           ..write('wordId: $wordId, ')
           ..write('groupId: $groupId, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3386,12 +3424,14 @@ typedef $$WordGroupLinksTableCreateCompanionBuilder = WordGroupLinksCompanion
     Function({
   required int wordId,
   required int groupId,
+  Value<int> sortOrder,
   Value<int> rowid,
 });
 typedef $$WordGroupLinksTableUpdateCompanionBuilder = WordGroupLinksCompanion
     Function({
   Value<int> wordId,
   Value<int> groupId,
+  Value<int> sortOrder,
   Value<int> rowid,
 });
 
@@ -3438,6 +3478,9 @@ class $$WordGroupLinksTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
   $$WordsTableFilterComposer get wordId {
     final $$WordsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -3488,6 +3531,9 @@ class $$WordGroupLinksTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
   $$WordsTableOrderingComposer get wordId {
     final $$WordsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -3538,6 +3584,9 @@ class $$WordGroupLinksTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
   $$WordsTableAnnotationComposer get wordId {
     final $$WordsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -3605,21 +3654,25 @@ class $$WordGroupLinksTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> wordId = const Value.absent(),
             Value<int> groupId = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               WordGroupLinksCompanion(
             wordId: wordId,
             groupId: groupId,
+            sortOrder: sortOrder,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required int wordId,
             required int groupId,
+            Value<int> sortOrder = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               WordGroupLinksCompanion.insert(
             wordId: wordId,
             groupId: groupId,
+            sortOrder: sortOrder,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
