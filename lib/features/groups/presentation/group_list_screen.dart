@@ -4,13 +4,47 @@ import 'package:go_router/go_router.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
 
-class GroupListScreen extends ConsumerWidget {
+class GroupListScreen extends ConsumerStatefulWidget {
   final int classId;
 
   const GroupListScreen({super.key, required this.classId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GroupListScreen> createState() => _GroupListScreenState();
+}
+
+class _GroupListScreenState extends ConsumerState<GroupListScreen> {
+  Future<void> _reorder(List<Group> groups, int index, int direction) async {
+    final newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= groups.length) return;
+    final db = ref.read(databaseProvider);
+    await db.swapGroupSortOrders(groups[index].id, groups[newIndex].id);
+  }
+
+  Future<void> _confirmDelete(
+      BuildContext context, AppDatabase db, Group group) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Group'),
+        content: Text('Delete "${group.name}"?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Delete')),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await db.deleteGroup(group);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final db = ref.watch(databaseProvider);
     final theme = Theme.of(context);
 
@@ -23,12 +57,12 @@ class GroupListScreen extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/classes/$classId/groups/new'),
+        onPressed: () => context.push('/classes/${widget.classId}/groups/new'),
         icon: const Icon(Icons.add),
         label: const Text('New Group'),
       ),
       body: StreamBuilder<List<Group>>(
-        stream: db.watchGroupsByClass(classId),
+        stream: db.watchGroupsByClass(widget.classId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -66,9 +100,23 @@ class GroupListScreen extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
+                        tooltip: 'Move up',
+                        icon: const Icon(Icons.arrow_upward, size: 20),
+                        onPressed: index == 0
+                            ? null
+                            : () => _reorder(groups, index, -1),
+                      ),
+                      IconButton(
+                        tooltip: 'Move down',
+                        icon: const Icon(Icons.arrow_downward, size: 20),
+                        onPressed: index == groups.length - 1
+                            ? null
+                            : () => _reorder(groups, index, 1),
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.edit),
-                        onPressed: () => context
-                            .push('/classes/$classId/groups/edit/${group.id}'),
+                        onPressed: () => context.push(
+                            '/classes/${widget.classId}/groups/edit/${group.id}'),
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete),
@@ -84,27 +132,5 @@ class GroupListScreen extends ConsumerWidget {
         },
       ),
     );
-  }
-
-  Future<void> _confirmDelete(
-      BuildContext context, AppDatabase db, Group group) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Group'),
-        content: Text('Delete "${group.name}"?'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
-          FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Delete')),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await db.deleteGroup(group);
-    }
   }
 }

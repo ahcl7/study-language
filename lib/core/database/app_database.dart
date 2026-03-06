@@ -20,6 +20,7 @@ class Classes extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 100)();
   TextColumn get language => text().withDefault(const Constant('en'))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
@@ -27,6 +28,7 @@ class Groups extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get classId => integer().references(Classes, #id)();
   TextColumn get name => text().withLength(min: 1, max: 100)();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
@@ -88,7 +90,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -98,6 +100,15 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 3) {
             await m.addColumn(wordGroupLinks, wordGroupLinks.sortOrder);
+          }
+          if (from < 4) {
+            await m.addColumn(groups, groups.sortOrder);
+          }
+          if (from < 5) {
+            await m.addColumn(classes, classes.sortOrder);
+          }
+          if (from < 6) {
+            await _normalizeSortOrders();
           }
         },
         onCreate: (Migrator m) async {
@@ -134,31 +145,133 @@ class AppDatabase extends _$AppDatabase {
 
   // ─── Class queries ───
 
-  Future<List<ClassesData>> getAllClasses() => select(classes).get();
+  Future<List<ClassesData>> getAllClasses() =>
+      (select(classes)..orderBy([(c) => OrderingTerm.asc(c.sortOrder)])).get();
 
-  Stream<List<ClassesData>> watchAllClasses() => select(classes).watch();
+  Stream<List<ClassesData>> watchAllClasses() =>
+      (select(classes)..orderBy([(c) => OrderingTerm.asc(c.sortOrder)]))
+          .watch();
 
-  Future<int> insertClass(ClassesCompanion c) => into(classes).insert(c);
+  Future<int> insertClass(ClassesCompanion c) async {
+    final existing = await getAllClasses();
+    final nextOrder = existing.isEmpty
+        ? 0
+        : existing.map((e) => e.sortOrder).reduce((a, b) => a > b ? a : b) + 1;
+    return into(classes).insert(c.copyWith(sortOrder: Value(nextOrder)));
+  }
 
   Future<bool> updateClass(ClassesData c) => update(classes).replace(c);
 
   Future<int> deleteClass(ClassesData c) => delete(classes).delete(c);
 
+  Future<void> updateClassSortOrder(int classId, int sortOrder) async {
+    await (update(classes)..where((c) => c.id.equals(classId)))
+        .write(ClassesCompanion(sortOrder: Value(sortOrder)));
+  }
+
+  Future<void> swapClassSortOrders(int classIdA, int classIdB) async {
+    final rows = await (select(classes)
+          ..where((c) => c.id.equals(classIdA) | c.id.equals(classIdB)))
+        .get();
+    if (rows.length != 2) return;
+    final orderA = rows.firstWhere((r) => r.id == classIdA).sortOrder;
+    final orderB = rows.firstWhere((r) => r.id == classIdB).sortOrder;
+    await updateClassSortOrder(classIdA, orderB);
+    await updateClassSortOrder(classIdB, orderA);
+  }
+
+  /// Normalize sortOrder for all classes, groups, and word-group links so that
+  /// within each parent there are no duplicates. Relative order is preserved
+  /// by sorting on (current sort_order, id).
+  Future<void> _normalizeSortOrders() async {
+    // ── Classes ──
+    final classRows = await customSelect(
+      'SELECT id FROM classes ORDER BY sort_order, id',
+    ).get();
+    for (int i = 0; i < classRows.length; i++) {
+      await customUpdate(
+        'UPDATE classes SET sort_order = ? WHERE id = ?',
+        variables: [Variable(i), Variable(classRows[i].read<int>('id'))],
+        updates: {classes},
+      );
+    }
+
+    // ── Groups (per class) ──
+    final groupRows = await customSelect(
+      'SELECT id, class_id FROM groups ORDER BY class_id, sort_order, id',
+    ).get();
+    final Map<int, int> classCounter = {};
+    for (final row in groupRows) {
+      final gId = row.read<int>('id');
+      final cId = row.read<int>('class_id');
+      final order = classCounter[cId] ?? 0;
+      await customUpdate(
+        'UPDATE groups SET sort_order = ? WHERE id = ?',
+        variables: [Variable(order), Variable(gId)],
+        updates: {groups},
+      );
+      classCounter[cId] = order + 1;
+    }
+
+    // ── Word-group links (per group) ──
+    final linkRows = await customSelect(
+      'SELECT word_id, group_id FROM word_group_links ORDER BY group_id, sort_order, word_id',
+    ).get();
+    final Map<int, int> groupCounter = {};
+    for (final row in linkRows) {
+      final wId = row.read<int>('word_id');
+      final gId = row.read<int>('group_id');
+      final order = groupCounter[gId] ?? 0;
+      await customUpdate(
+        'UPDATE word_group_links SET sort_order = ? WHERE word_id = ? AND group_id = ?',
+        variables: [Variable(order), Variable(wId), Variable(gId)],
+        updates: {wordGroupLinks},
+      );
+      groupCounter[gId] = order + 1;
+    }
+  }
+
   // ─── Group queries ───
 
-  Future<List<Group>> getGroupsByClass(int classId) =>
-      (select(groups)..where((g) => g.classId.equals(classId))).get();
+  Future<List<Group>> getGroupsByClass(int classId) => (select(groups)
+        ..where((g) => g.classId.equals(classId))
+        ..orderBy([(g) => OrderingTerm.asc(g.sortOrder)]))
+      .get();
 
-  Stream<List<Group>> watchGroupsByClass(int classId) =>
-      (select(groups)..where((g) => g.classId.equals(classId))).watch();
+  Stream<List<Group>> watchGroupsByClass(int classId) => (select(groups)
+        ..where((g) => g.classId.equals(classId))
+        ..orderBy([(g) => OrderingTerm.asc(g.sortOrder)]))
+      .watch();
 
   Future<List<Group>> getAllGroups() => select(groups).get();
 
-  Future<int> insertGroup(GroupsCompanion g) => into(groups).insert(g);
+  Future<int> insertGroup(GroupsCompanion g) async {
+    final existing = await getGroupsByClass((g.classId as Value<int>).value);
+    final nextOrder = existing.isEmpty
+        ? 0
+        : existing.map((e) => e.sortOrder).reduce((a, b) => a > b ? a : b) + 1;
+    return into(groups).insert(g.copyWith(sortOrder: Value(nextOrder)));
+  }
 
   Future<bool> updateGroup(Group g) => update(groups).replace(g);
 
   Future<int> deleteGroup(Group g) => delete(groups).delete(g);
+
+  Future<void> updateGroupSortOrder(int groupId, int sortOrder) async {
+    await (update(groups)..where((g) => g.id.equals(groupId)))
+        .write(GroupsCompanion(sortOrder: Value(sortOrder)));
+  }
+
+  Future<void> swapGroupSortOrders(int groupIdA, int groupIdB) async {
+    final rows = await (select(groups)
+          ..where((g) => g.id.equals(groupIdA) | g.id.equals(groupIdB)))
+        .get();
+    if (rows.length != 2) return;
+    final orderA = rows.firstWhere((r) => r.id == groupIdA).sortOrder;
+    final orderB = rows.firstWhere((r) => r.id == groupIdB).sortOrder;
+    await updateGroupSortOrder(groupIdA, orderB);
+    await updateGroupSortOrder(groupIdB, orderA);
+  }
 
   // ─── WordType queries ───
 
@@ -210,14 +323,12 @@ class AppDatabase extends _$AppDatabase {
   Future<void> updateWordSortOrderInGroup(
       int wordId, int groupId, int sortOrder) async {
     await (update(wordGroupLinks)
-          ..where(
-              (l) => l.wordId.equals(wordId) & l.groupId.equals(groupId)))
+          ..where((l) => l.wordId.equals(wordId) & l.groupId.equals(groupId)))
         .write(WordGroupLinksCompanion(sortOrder: Value(sortOrder)));
   }
 
   /// Swap sort orders of two words inside a group.
-  Future<void> swapWordSortOrders(
-      int wordIdA, int wordIdB, int groupId) async {
+  Future<void> swapWordSortOrders(int wordIdA, int wordIdB, int groupId) async {
     final rows = await (select(wordGroupLinks)
           ..where((l) =>
               l.groupId.equals(groupId) &
@@ -270,8 +381,7 @@ class AppDatabase extends _$AppDatabase {
       innerJoin(wordGroupLinks, wordGroupLinks.wordId.equalsExp(words.id)),
       innerJoin(groups, groups.id.equalsExp(wordGroupLinks.groupId)),
     ])
-      ..where(
-          groups.classId.equals(classId) & words.isActive.equals(true));
+      ..where(groups.classId.equals(classId) & words.isActive.equals(true));
     return query.map((row) => row.readTable(words)).get();
   }
 
@@ -362,6 +472,7 @@ class AppDatabase extends _$AppDatabase {
                 'id': c.id,
                 'name': c.name,
                 'language': c.language,
+                'sortOrder': c.sortOrder,
                 'createdAt': c.createdAt.toIso8601String(),
               })
           .toList(),
@@ -370,6 +481,7 @@ class AppDatabase extends _$AppDatabase {
                 'id': g.id,
                 'classId': g.classId,
                 'name': g.name,
+                'sortOrder': g.sortOrder,
                 'createdAt': g.createdAt.toIso8601String(),
               })
           .toList(),
@@ -388,7 +500,11 @@ class AppDatabase extends _$AppDatabase {
               })
           .toList(),
       'wordGroupLinks': (await select(wordGroupLinks).get())
-          .map((l) => {'wordId': l.wordId, 'groupId': l.groupId, 'sortOrder': l.sortOrder})
+          .map((l) => {
+                'wordId': l.wordId,
+                'groupId': l.groupId,
+                'sortOrder': l.sortOrder
+              })
           .toList(),
       'wordTypeLinks': (await select(wordTypeLinks).get())
           .map((l) => {'wordId': l.wordId, 'typeId': l.typeId})
@@ -436,6 +552,7 @@ class AppDatabase extends _$AppDatabase {
         await into(classes).insert(ClassesCompanion.insert(
           name: c['name'] as String,
           language: Value(c['language'] as String? ?? 'en'),
+          sortOrder: Value(c['sortOrder'] as int? ?? 0),
         ));
       }
 
@@ -444,6 +561,7 @@ class AppDatabase extends _$AppDatabase {
         await into(groups).insert(GroupsCompanion.insert(
           classId: g['classId'] as int,
           name: g['name'] as String,
+          sortOrder: Value(g['sortOrder'] as int? ?? 0),
         ));
       }
 

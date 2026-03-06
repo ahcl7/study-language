@@ -54,6 +54,7 @@ class _GroupFormScreenState extends ConsumerState<GroupFormScreen> {
         classId: widget.classId,
         name: _nameCtrl.text.trim(),
         createdAt: _existing!.createdAt,
+        sortOrder: _existing!.sortOrder,
       ));
     } else {
       await db.insertGroup(GroupsCompanion.insert(

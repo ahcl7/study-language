@@ -4,11 +4,24 @@ import 'package:go_router/go_router.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
 
-class ClassListScreen extends ConsumerWidget {
+class ClassListScreen extends ConsumerStatefulWidget {
   const ClassListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ClassListScreen> createState() => _ClassListScreenState();
+}
+
+class _ClassListScreenState extends ConsumerState<ClassListScreen> {
+  Future<void> _reorder(
+      List<ClassesData> classes, int index, int direction) async {
+    final newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= classes.length) return;
+    final db = ref.read(databaseProvider);
+    await db.swapClassSortOrders(classes[index].id, classes[newIndex].id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final db = ref.watch(databaseProvider);
     final theme = Theme.of(context);
 
@@ -70,6 +83,20 @@ class ClassListScreen extends ConsumerWidget {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      IconButton(
+                        tooltip: 'Move up',
+                        icon: const Icon(Icons.arrow_upward, size: 20),
+                        onPressed: index == 0
+                            ? null
+                            : () => _reorder(classes, index, -1),
+                      ),
+                      IconButton(
+                        tooltip: 'Move down',
+                        icon: const Icon(Icons.arrow_downward, size: 20),
+                        onPressed: index == classes.length - 1
+                            ? null
+                            : () => _reorder(classes, index, 1),
+                      ),
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () =>

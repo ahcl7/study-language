@@ -299,6 +299,14 @@ class $ClassesTable extends Classes with TableInfo<$ClassesTable, ClassesData> {
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant('en'));
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -308,7 +316,8 @@ class $ClassesTable extends Classes with TableInfo<$ClassesTable, ClassesData> {
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
   @override
-  List<GeneratedColumn> get $columns => [id, name, language, createdAt];
+  List<GeneratedColumn> get $columns =>
+      [id, name, language, sortOrder, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -332,6 +341,10 @@ class $ClassesTable extends Classes with TableInfo<$ClassesTable, ClassesData> {
       context.handle(_languageMeta,
           language.isAcceptableOrUnknown(data['language']!, _languageMeta));
     }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -351,6 +364,8 @@ class $ClassesTable extends Classes with TableInfo<$ClassesTable, ClassesData> {
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       language: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}language'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -366,11 +381,13 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
   final int id;
   final String name;
   final String language;
+  final int sortOrder;
   final DateTime createdAt;
   const ClassesData(
       {required this.id,
       required this.name,
       required this.language,
+      required this.sortOrder,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -378,6 +395,7 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['language'] = Variable<String>(language);
+    map['sort_order'] = Variable<int>(sortOrder);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -387,6 +405,7 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
       id: Value(id),
       name: Value(name),
       language: Value(language),
+      sortOrder: Value(sortOrder),
       createdAt: Value(createdAt),
     );
   }
@@ -398,6 +417,7 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       language: serializer.fromJson<String>(json['language']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -408,16 +428,22 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'language': serializer.toJson<String>(language),
+      'sortOrder': serializer.toJson<int>(sortOrder),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
   ClassesData copyWith(
-          {int? id, String? name, String? language, DateTime? createdAt}) =>
+          {int? id,
+          String? name,
+          String? language,
+          int? sortOrder,
+          DateTime? createdAt}) =>
       ClassesData(
         id: id ?? this.id,
         name: name ?? this.name,
         language: language ?? this.language,
+        sortOrder: sortOrder ?? this.sortOrder,
         createdAt: createdAt ?? this.createdAt,
       );
   ClassesData copyWithCompanion(ClassesCompanion data) {
@@ -425,6 +451,7 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       language: data.language.present ? data.language.value : this.language,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -435,13 +462,14 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('language: $language, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, language, createdAt);
+  int get hashCode => Object.hash(id, name, language, sortOrder, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -449,6 +477,7 @@ class ClassesData extends DataClass implements Insertable<ClassesData> {
           other.id == this.id &&
           other.name == this.name &&
           other.language == this.language &&
+          other.sortOrder == this.sortOrder &&
           other.createdAt == this.createdAt);
 }
 
@@ -456,29 +485,34 @@ class ClassesCompanion extends UpdateCompanion<ClassesData> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> language;
+  final Value<int> sortOrder;
   final Value<DateTime> createdAt;
   const ClassesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.language = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   ClassesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.language = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : name = Value(name);
   static Insertable<ClassesData> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? language,
+    Expression<int>? sortOrder,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (language != null) 'language': language,
+      if (sortOrder != null) 'sort_order': sortOrder,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -487,11 +521,13 @@ class ClassesCompanion extends UpdateCompanion<ClassesData> {
       {Value<int>? id,
       Value<String>? name,
       Value<String>? language,
+      Value<int>? sortOrder,
       Value<DateTime>? createdAt}) {
     return ClassesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       language: language ?? this.language,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -508,6 +544,9 @@ class ClassesCompanion extends UpdateCompanion<ClassesData> {
     if (language.present) {
       map['language'] = Variable<String>(language.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -520,6 +559,7 @@ class ClassesCompanion extends UpdateCompanion<ClassesData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('language: $language, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -557,6 +597,14 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -566,7 +614,8 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
   @override
-  List<GeneratedColumn> get $columns => [id, classId, name, createdAt];
+  List<GeneratedColumn> get $columns =>
+      [id, classId, name, sortOrder, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -592,6 +641,10 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -611,6 +664,8 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
           .read(DriftSqlType.int, data['${effectivePrefix}class_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -626,11 +681,13 @@ class Group extends DataClass implements Insertable<Group> {
   final int id;
   final int classId;
   final String name;
+  final int sortOrder;
   final DateTime createdAt;
   const Group(
       {required this.id,
       required this.classId,
       required this.name,
+      required this.sortOrder,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -638,6 +695,7 @@ class Group extends DataClass implements Insertable<Group> {
     map['id'] = Variable<int>(id);
     map['class_id'] = Variable<int>(classId);
     map['name'] = Variable<String>(name);
+    map['sort_order'] = Variable<int>(sortOrder);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -647,6 +705,7 @@ class Group extends DataClass implements Insertable<Group> {
       id: Value(id),
       classId: Value(classId),
       name: Value(name),
+      sortOrder: Value(sortOrder),
       createdAt: Value(createdAt),
     );
   }
@@ -658,6 +717,7 @@ class Group extends DataClass implements Insertable<Group> {
       id: serializer.fromJson<int>(json['id']),
       classId: serializer.fromJson<int>(json['classId']),
       name: serializer.fromJson<String>(json['name']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -668,15 +728,22 @@ class Group extends DataClass implements Insertable<Group> {
       'id': serializer.toJson<int>(id),
       'classId': serializer.toJson<int>(classId),
       'name': serializer.toJson<String>(name),
+      'sortOrder': serializer.toJson<int>(sortOrder),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
-  Group copyWith({int? id, int? classId, String? name, DateTime? createdAt}) =>
+  Group copyWith(
+          {int? id,
+          int? classId,
+          String? name,
+          int? sortOrder,
+          DateTime? createdAt}) =>
       Group(
         id: id ?? this.id,
         classId: classId ?? this.classId,
         name: name ?? this.name,
+        sortOrder: sortOrder ?? this.sortOrder,
         createdAt: createdAt ?? this.createdAt,
       );
   Group copyWithCompanion(GroupsCompanion data) {
@@ -684,6 +751,7 @@ class Group extends DataClass implements Insertable<Group> {
       id: data.id.present ? data.id.value : this.id,
       classId: data.classId.present ? data.classId.value : this.classId,
       name: data.name.present ? data.name.value : this.name,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -694,13 +762,14 @@ class Group extends DataClass implements Insertable<Group> {
           ..write('id: $id, ')
           ..write('classId: $classId, ')
           ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, classId, name, createdAt);
+  int get hashCode => Object.hash(id, classId, name, sortOrder, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -708,6 +777,7 @@ class Group extends DataClass implements Insertable<Group> {
           other.id == this.id &&
           other.classId == this.classId &&
           other.name == this.name &&
+          other.sortOrder == this.sortOrder &&
           other.createdAt == this.createdAt);
 }
 
@@ -715,17 +785,20 @@ class GroupsCompanion extends UpdateCompanion<Group> {
   final Value<int> id;
   final Value<int> classId;
   final Value<String> name;
+  final Value<int> sortOrder;
   final Value<DateTime> createdAt;
   const GroupsCompanion({
     this.id = const Value.absent(),
     this.classId = const Value.absent(),
     this.name = const Value.absent(),
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   GroupsCompanion.insert({
     this.id = const Value.absent(),
     required int classId,
     required String name,
+    this.sortOrder = const Value.absent(),
     this.createdAt = const Value.absent(),
   })  : classId = Value(classId),
         name = Value(name);
@@ -733,12 +806,14 @@ class GroupsCompanion extends UpdateCompanion<Group> {
     Expression<int>? id,
     Expression<int>? classId,
     Expression<String>? name,
+    Expression<int>? sortOrder,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (classId != null) 'class_id': classId,
       if (name != null) 'name': name,
+      if (sortOrder != null) 'sort_order': sortOrder,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -747,11 +822,13 @@ class GroupsCompanion extends UpdateCompanion<Group> {
       {Value<int>? id,
       Value<int>? classId,
       Value<String>? name,
+      Value<int>? sortOrder,
       Value<DateTime>? createdAt}) {
     return GroupsCompanion(
       id: id ?? this.id,
       classId: classId ?? this.classId,
       name: name ?? this.name,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -768,6 +845,9 @@ class GroupsCompanion extends UpdateCompanion<Group> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -780,6 +860,7 @@ class GroupsCompanion extends UpdateCompanion<Group> {
           ..write('id: $id, ')
           ..write('classId: $classId, ')
           ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -2250,12 +2331,14 @@ typedef $$ClassesTableCreateCompanionBuilder = ClassesCompanion Function({
   Value<int> id,
   required String name,
   Value<String> language,
+  Value<int> sortOrder,
   Value<DateTime> createdAt,
 });
 typedef $$ClassesTableUpdateCompanionBuilder = ClassesCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<String> language,
+  Value<int> sortOrder,
   Value<DateTime> createdAt,
 });
 
@@ -2310,6 +2393,9 @@ class $$ClassesTableFilterComposer
 
   ColumnFilters<String> get language => $composableBuilder(
       column: $table.language, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -2375,6 +2461,9 @@ class $$ClassesTableOrderingComposer
   ColumnOrderings<String> get language => $composableBuilder(
       column: $table.language, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 }
@@ -2396,6 +2485,9 @@ class $$ClassesTableAnnotationComposer
 
   GeneratedColumn<String> get language =>
       $composableBuilder(column: $table.language, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2469,24 +2561,28 @@ class $$ClassesTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> language = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               ClassesCompanion(
             id: id,
             name: name,
             language: language,
+            sortOrder: sortOrder,
             createdAt: createdAt,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
             Value<String> language = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               ClassesCompanion.insert(
             id: id,
             name: name,
             language: language,
+            sortOrder: sortOrder,
             createdAt: createdAt,
           ),
           withReferenceMapper: (p0) => p0
@@ -2552,12 +2648,14 @@ typedef $$GroupsTableCreateCompanionBuilder = GroupsCompanion Function({
   Value<int> id,
   required int classId,
   required String name,
+  Value<int> sortOrder,
   Value<DateTime> createdAt,
 });
 typedef $$GroupsTableUpdateCompanionBuilder = GroupsCompanion Function({
   Value<int> id,
   Value<int> classId,
   Value<String> name,
+  Value<int> sortOrder,
   Value<DateTime> createdAt,
 });
 
@@ -2609,6 +2707,9 @@ class $$GroupsTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -2670,6 +2771,9 @@ class $$GroupsTableOrderingComposer
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -2708,6 +2812,9 @@ class $$GroupsTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2780,24 +2887,28 @@ class $$GroupsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<int> classId = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               GroupsCompanion(
             id: id,
             classId: classId,
             name: name,
+            sortOrder: sortOrder,
             createdAt: createdAt,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int classId,
             required String name,
+            Value<int> sortOrder = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               GroupsCompanion.insert(
             id: id,
             classId: classId,
             name: name,
+            sortOrder: sortOrder,
             createdAt: createdAt,
           ),
           withReferenceMapper: (p0) => p0

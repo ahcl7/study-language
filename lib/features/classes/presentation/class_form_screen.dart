@@ -56,6 +56,7 @@ class _ClassFormScreenState extends ConsumerState<ClassFormScreen> {
         name: _nameCtrl.text.trim(),
         language: _language,
         createdAt: _existing!.createdAt,
+        sortOrder: _existing!.sortOrder,
       ));
     } else {
       await db.insertClass(ClassesCompanion.insert(
