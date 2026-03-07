@@ -152,11 +152,8 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                         controller: _meaningCtrl,
                         decoration: const InputDecoration(
                             labelText: 'Meaning',
-                            hintText: 'Enter the meaning / translation'),
+                            hintText: 'Enter the meaning / translation (optional)'),
                         maxLines: 3,
-                        validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Required'
-                            : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(

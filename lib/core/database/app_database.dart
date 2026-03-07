@@ -341,6 +341,54 @@ class AppDatabase extends _$AppDatabase {
     await updateWordSortOrderInGroup(wordIdB, groupId, orderA);
   }
 
+  /// Move a word to the bottom (highest sortOrder + 1) in every group it belongs to.
+  Future<void> moveWordToBottomOfAllGroups(int wordId) async {
+    final links = await (select(wordGroupLinks)
+          ..where((l) => l.wordId.equals(wordId)))
+        .get();
+    for (final link in links) {
+      final groupLinks = await (select(wordGroupLinks)
+            ..where((l) => l.groupId.equals(link.groupId)))
+          .get();
+      final maxOrder = groupLinks.isEmpty
+          ? 0
+          : groupLinks.map((e) => e.sortOrder).reduce((a, b) => a > b ? a : b);
+      await updateWordSortOrderInGroup(wordId, link.groupId, maxOrder + 1);
+    }
+  }
+
+  /// Re-sort a group so all active words come before inactive ones,
+  /// preserving relative order within each category.
+  Future<void> _renormalizeGroupOrder(int groupId) async {
+    // Fetch all (wordId, sortOrder, isActive) for the group
+    final rows = await (select(wordGroupLinks).join([
+      innerJoin(words, words.id.equalsExp(wordGroupLinks.wordId)),
+    ])
+          ..where(wordGroupLinks.groupId.equals(groupId))
+          ..orderBy([OrderingTerm.asc(wordGroupLinks.sortOrder)]))
+        .get();
+
+    final active = rows.where((r) => r.readTable(words).isActive).toList();
+    final inactive = rows.where((r) => !r.readTable(words).isActive).toList();
+    final ordered = [...active, ...inactive];
+
+    for (int i = 0; i < ordered.length; i++) {
+      final wId = ordered[i].readTable(wordGroupLinks).wordId;
+      await updateWordSortOrderInGroup(wId, groupId, i);
+    }
+  }
+
+  /// When a word is re-activated, place it just before all inactive words
+  /// in every group it belongs to (preserving relative order of others).
+  Future<void> moveWordAboveInactiveInAllGroups(int wordId) async {
+    final links = await (select(wordGroupLinks)
+          ..where((l) => l.wordId.equals(wordId)))
+        .get();
+    for (final link in links) {
+      await _renormalizeGroupOrder(link.groupId);
+    }
+  }
+
   Future<void> unlinkWordFromGroup(int wordId, int groupId) =>
       (delete(wordGroupLinks)
             ..where((l) => l.wordId.equals(wordId) & l.groupId.equals(groupId)))

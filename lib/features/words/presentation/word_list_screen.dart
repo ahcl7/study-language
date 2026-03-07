@@ -26,8 +26,11 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
   Future<void> _loadWords() async {
     final db = ref.read(databaseProvider);
     final words = await db.getWordsByGroup(widget.groupId);
+    // Active words first (preserving sort order), inactive after
+    final active = words.where((w) => w.isActive).toList();
+    final inactive = words.where((w) => !w.isActive).toList();
     setState(() {
-      _words = words;
+      _words = [...active, ...inactive];
       _loading = false;
     });
   }
@@ -87,7 +90,46 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                     ],
                   ),
                 )
-              : ListView.builder(
+              : Column(
+                  children: [
+                    // Summary bar
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      color: theme.colorScheme.surfaceContainerHighest
+                          .withValues(alpha: 0.5),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check_circle,
+                              size: 16, color: Colors.green.shade600),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${_words.where((w) => w.isActive).length} active',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.green.shade700,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(width: 16),
+                          Icon(Icons.cancel,
+                              size: 16, color: theme.colorScheme.outline),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${_words.where((w) => !w.isActive).length} inactive',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.outline,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const Spacer(),
+                          Text(
+                            'Total: ${_words.length}',
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
                   padding: const EdgeInsets.all(16),
                   itemCount: _words.length,
                   itemBuilder: (context, index) {
@@ -129,14 +171,16 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                             IconButton(
                               tooltip: 'Move up',
                               icon: const Icon(Icons.arrow_upward, size: 20),
-                              onPressed: index == 0
+                              onPressed: index == 0 ||
+                                      _words[index - 1].isActive != word.isActive
                                   ? null
                                   : () => _reorder(index, -1),
                             ),
                             IconButton(
                               tooltip: 'Move down',
                               icon: const Icon(Icons.arrow_downward, size: 20),
-                              onPressed: index == _words.length - 1
+                              onPressed: index == _words.length - 1 ||
+                                      _words[index + 1].isActive != word.isActive
                                   ? null
                                   : () => _reorder(index, 1),
                             ),
@@ -160,6 +204,9 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                     );
                   },
                 ),
+                    ),  // Expanded
+                  ],
+                ),  // Column
     );
   }
 
