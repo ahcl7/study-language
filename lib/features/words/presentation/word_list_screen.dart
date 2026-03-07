@@ -51,6 +51,93 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
     await _loadWords();
   }
 
+  /// Opens a bottom sheet to move [word] to any position within its
+  /// active/inactive segment. Uses midpoint strategy — usually 1 DB update.
+  Future<void> _openMoveSheet(Word word) async {
+    // Only show peers in the same active/inactive group
+    final peers = _words.where((w) => w.isActive == word.isActive).toList();
+    if (peers.length < 2) return;
+    final currentIdx = peers.indexWhere((w) => w.id == word.id);
+
+    final db = ref.read(databaseProvider);
+    // Each entry represents "insert after peers[i]" (or null = move to top)
+    // We show N+1 slots (before first, after each word) minus current position
+    await showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        // Slots: null = before first, peers[i].id = after i-th peer
+        final slots = <int?>[
+          null,
+          ...peers.map((p) => p.id as int?),
+        ];
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text('Move "${word.name}" to...',
+                  style: theme.textTheme.titleMedium),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: slots.length,
+                itemBuilder: (ctx, i) {
+                  final afterId = slots[i];
+                  // Skip slots that would leave word in same position
+                  final afterIdx = afterId == null
+                      ? -1
+                      : peers.indexWhere((p) => p.id == afterId);
+                  // Same position: afterIdx == currentIdx - 1  OR  afterIdx == currentIdx
+                  final isSamePos =
+                      afterIdx == currentIdx - 1 || afterIdx == currentIdx;
+                  final label = afterId == null
+                      ? 'Move to top'
+                      : 'After: ${peers.firstWhere((p) => p.id == afterId).name}';
+                  return ListTile(
+                    dense: true,
+                    leading: Icon(
+                      afterId == null
+                          ? Icons.vertical_align_top
+                          : Icons.arrow_downward,
+                      size: 18,
+                      color: isSamePos
+                          ? theme.colorScheme.outline
+                          : theme.colorScheme.primary,
+                    ),
+                    title: Text(label,
+                        style: TextStyle(
+                          color: isSamePos ? theme.colorScheme.outline : null,
+                        )),
+                    trailing: isSamePos
+                        ? Text('current',
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(color: theme.colorScheme.outline))
+                        : null,
+                    onTap: isSamePos
+                        ? null
+                        : () async {
+                            Navigator.pop(ctx);
+                            await db.moveWordToPositionInGroup(
+                              word.id,
+                              widget.groupId,
+                              afterWordId: afterId,
+                            );
+                            await _loadWords();
+                          },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final db = ref.watch(databaseProvider);
@@ -66,8 +153,7 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await context
-              .push('/words/new?groupId=${widget.groupId}');
+          await context.push('/words/new?groupId=${widget.groupId}');
           _loadWords();
         },
         icon: const Icon(Icons.add),
@@ -80,11 +166,10 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.abc, size: 64,
-                          color: theme.colorScheme.outline),
+                      Icon(Icons.abc,
+                          size: 64, color: theme.colorScheme.outline),
                       const SizedBox(height: 16),
-                      Text('No words yet',
-                          style: theme.textTheme.titleMedium),
+                      Text('No words yet', style: theme.textTheme.titleMedium),
                       const SizedBox(height: 8),
                       const Text('Add vocabulary words to this group'),
                     ],
@@ -130,83 +215,93 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _words.length,
-                  itemBuilder: (context, index) {
-                    final word = _words[index];
-                    return Card(
-                      child: ListTile(
-                        leading: Tooltip(
-                          message: word.isActive ? 'Active' : 'Deactivated',
-                          child: Switch(
-                            value: word.isActive,
-                            onChanged: (_) => _toggleActive(word),
-                          ),
-                        ),
-                        title: Text(
-                          word.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: word.isActive
-                                ? null
-                                : theme.colorScheme.outline,
-                            decoration: word.isActive
-                                ? null
-                                : TextDecoration.lineThrough,
-                          ),
-                        ),
-                        subtitle: Text(
-                          word.meaning,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: word.isActive
-                                ? null
-                                : theme.colorScheme.outline,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              tooltip: 'Move up',
-                              icon: const Icon(Icons.arrow_upward, size: 20),
-                              onPressed: index == 0 ||
-                                      _words[index - 1].isActive != word.isActive
-                                  ? null
-                                  : () => _reorder(index, -1),
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _words.length,
+                        itemBuilder: (context, index) {
+                          final word = _words[index];
+                          return Card(
+                            child: ListTile(
+                              leading: Tooltip(
+                                message:
+                                    word.isActive ? 'Active' : 'Deactivated',
+                                child: Switch(
+                                  value: word.isActive,
+                                  onChanged: (_) => _toggleActive(word),
+                                ),
+                              ),
+                              title: Text(
+                                '${index + 1}. ${word.name}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: word.isActive
+                                      ? null
+                                      : theme.colorScheme.outline,
+                                  decoration: word.isActive
+                                      ? null
+                                      : TextDecoration.lineThrough,
+                                ),
+                              ),
+                              subtitle: Text(
+                                word.meaning,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: word.isActive
+                                      ? null
+                                      : theme.colorScheme.outline,
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Move up',
+                                    icon: const Icon(Icons.arrow_upward,
+                                        size: 20),
+                                    onPressed: index == 0 ||
+                                            _words[index - 1].isActive !=
+                                                word.isActive
+                                        ? null
+                                        : () => _reorder(index, -1),
+                                  ),
+                                  IconButton(
+                                    tooltip: 'Move down',
+                                    icon: const Icon(Icons.arrow_downward,
+                                        size: 20),
+                                    onPressed: index == _words.length - 1 ||
+                                            _words[index + 1].isActive !=
+                                                word.isActive
+                                        ? null
+                                        : () => _reorder(index, 1),
+                                  ),
+                                  IconButton(
+                                    tooltip: 'Move to position',
+                                    icon: const Icon(Icons.swap_vert, size: 20),
+                                    onPressed: () => _openMoveSheet(word),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () async {
+                                      await context
+                                          .push('/words/edit/${word.id}');
+                                      _loadWords();
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () =>
+                                        _confirmDelete(context, db, word),
+                                  ),
+                                ],
+                              ),
+                              onTap: () => _showWordDetail(context, word),
                             ),
-                            IconButton(
-                              tooltip: 'Move down',
-                              icon: const Icon(Icons.arrow_downward, size: 20),
-                              onPressed: index == _words.length - 1 ||
-                                      _words[index + 1].isActive != word.isActive
-                                  ? null
-                                  : () => _reorder(index, 1),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () async {
-                                await context
-                                    .push('/words/edit/${word.id}');
-                                _loadWords();
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () =>
-                                  _confirmDelete(context, db, word),
-                            ),
-                          ],
-                        ),
-                        onTap: () => _showWordDetail(context, word),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                    ),  // Expanded
+                    ), // Expanded
                   ],
-                ),  // Column
+                ), // Column
     );
   }
 
@@ -232,8 +327,7 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
                 const SizedBox(height: 12),
                 Text('Image:', style: theme.textTheme.labelLarge),
                 const SizedBox(height: 4),
-                Text(word.imagePath!,
-                    style: theme.textTheme.bodySmall),
+                Text(word.imagePath!, style: theme.textTheme.bodySmall),
               ],
             ],
           ),

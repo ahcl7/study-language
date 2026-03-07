@@ -341,6 +341,50 @@ class AppDatabase extends _$AppDatabase {
     await updateWordSortOrderInGroup(wordIdB, groupId, orderA);
   }
 
+  /// Move [wordId] to position after [afterWordId] in the group.
+  /// Pass [afterWordId] = null to move to first position.
+  ///
+  /// Cost: usually **1 UPDATE** (midpoint between neighbors).
+  /// Falls back to renormalize (n+1 updates) only when the integer gap is
+  /// exhausted — which is very rare with a gap seed of 1 000.
+  Future<void> moveWordToPositionInGroup(
+      int wordId, int groupId, {required int? afterWordId}) async {
+    // All links ordered by sortOrder, excluding the word being moved
+    final allRows = await (select(wordGroupLinks)
+          ..where((l) => l.groupId.equals(groupId))
+          ..orderBy([(l) => OrderingTerm.asc(l.sortOrder)]))
+        .get();
+    final others = allRows.where((r) => r.wordId != wordId).toList();
+    if (others.isEmpty) return;
+
+    int newOrder;
+    if (afterWordId == null) {
+      // Move before the first word
+      newOrder = others.first.sortOrder - 1;
+    } else {
+      final idx = others.indexWhere((r) => r.wordId == afterWordId);
+      if (idx == -1) return;
+      if (idx == others.length - 1) {
+        // Move after the last word
+        newOrder = others.last.sortOrder + 1;
+      } else {
+        final a = others[idx].sortOrder;
+        final b = others[idx + 1].sortOrder;
+        if (b - a > 1) {
+          // Gap available — 1 UPDATE only
+          newOrder = (a + b) ~/ 2;
+        } else {
+          // Gap exhausted: renormalize entire group with gap=1000000, then midpoint
+          for (int i = 0; i < others.length; i++) {
+            await updateWordSortOrderInGroup(others[i].wordId, groupId, i * 1000000);
+          }
+          newOrder = idx * 1000000 + 500000; // sits exactly between idx and idx+1
+        }
+      }
+    }
+    await updateWordSortOrderInGroup(wordId, groupId, newOrder);
+  }
+
   /// Move a word to the bottom (highest sortOrder + 1) in every group it belongs to.
   Future<void> moveWordToBottomOfAllGroups(int wordId) async {
     final links = await (select(wordGroupLinks)
