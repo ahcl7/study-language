@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,12 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
   bool _loading = true;
   Word? _existing;
 
+  // Live-match state (new-word mode only)
+  List<_WordMatchInfo> _nameMatches = [];
+  List<_WordMatchInfo> _duplicateInGroup = [];
+  Set<int> _currentGroupWordIds = {};
+  Timer? _searchDebounce;
+
   List<WordType> _allTypes = [];
   Set<int> _selectedTypeIds = {};
   List<Group> _allGroups = [];
@@ -50,20 +57,69 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
         _meaningCtrl.text = _existing!.meaning;
         _exampleCtrl.text = _existing!.example;
         _imagePath = _existing!.imagePath;
-        _selectedTypeIds =
-            (await db.getTypeIdsForWord(_existing!.id)).toSet();
+        _selectedTypeIds = (await db.getTypeIdsForWord(_existing!.id)).toSet();
         _selectedGroupIds =
             (await db.getGroupIdsForWord(_existing!.id)).toSet();
       }
     } else if (widget.groupId != null) {
       _selectedGroupIds = {widget.groupId!};
+      // Load existing word ids in this group so we can exclude them from matches
+      final groupWords = await db.getWordsByGroup(widget.groupId!);
+      _currentGroupWordIds = groupWords.map((w) => w.id).toSet();
     }
 
     setState(() => _loading = false);
+
+    // Attach name listener only in new-word mode
+    if (widget.wordId == null) {
+      _nameCtrl.addListener(_onNameChanged);
+    }
+  }
+
+  void _onNameChanged() {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () async {
+      final query = _nameCtrl.text.trim();
+      if (query.isEmpty) {
+        if (mounted)
+          setState(() {
+            _nameMatches = [];
+            _duplicateInGroup = [];
+          });
+        return;
+      }
+      final db = ref.read(databaseProvider);
+      final results = await db.searchWordsByName(query);
+      // Split: already in group (warning) vs not in group (suggestion)
+      final inGroup =
+          results.where((w) => _currentGroupWordIds.contains(w.id)).toList();
+      final filtered =
+          results.where((w) => !_currentGroupWordIds.contains(w.id)).toList();
+      // Load group membership for each
+      final dupInfos = await Future.wait(
+        inGroup.map((w) async {
+          final grps = await db.getGroupsForWord(w.id);
+          return _WordMatchInfo(word: w, groups: grps);
+        }),
+      );
+      final infos = await Future.wait(
+        filtered.map((w) async {
+          final grps = await db.getGroupsForWord(w.id);
+          return _WordMatchInfo(word: w, groups: grps);
+        }),
+      );
+      if (mounted)
+        setState(() {
+          _nameMatches = infos;
+          _duplicateInGroup = dupInfos;
+        });
+    });
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
+    if (widget.wordId == null) _nameCtrl.removeListener(_onNameChanged);
     _nameCtrl.dispose();
     _meaningCtrl.dispose();
     _exampleCtrl.dispose();
@@ -143,16 +199,59 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                         decoration: const InputDecoration(
                             labelText: 'Word',
                             hintText: 'Enter the vocabulary word'),
-                        validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Required'
-                            : null,
+                        validator: (v) =>
+                            v == null || v.trim().isEmpty ? 'Required' : null,
                       ),
+                      // Duplicate-in-group warning banner
+                      if (!isEdit && _duplicateInGroup.isNotEmpty)
+                        ..._duplicateInGroup
+                            .map((info) => _DuplicateWarningCard(info: info))
+                            .toList(),
+                      // Existing-word suggestion banner
+                      if (!isEdit && _nameMatches.isNotEmpty)
+                        ..._nameMatches
+                            .map((info) => _MatchSuggestionCard(
+                                  info: info,
+                                  groupId: widget.groupId,
+                                  onClone: () async {
+                                    final db = ref.read(databaseProvider);
+                                    final typeIds = await db
+                                        .getTypeIdsForWord(info.word.id);
+                                    setState(() {
+                                      _meaningCtrl.text = info.word.meaning;
+                                      _exampleCtrl.text = info.word.example;
+                                      _imagePath = info.word.imagePath;
+                                      _selectedTypeIds = typeIds.toSet();
+                                      _nameMatches = [];
+                                    });
+                                  },
+                                  onAddToGroup: widget.groupId == null
+                                      ? null
+                                      : () async {
+                                          final db = ref.read(databaseProvider);
+                                          await db.linkWordToGroup(
+                                              info.word.id, widget.groupId!);
+                                          if (mounted) context.pop();
+                                        },
+                                  onMoveToGroup: widget.groupId == null
+                                      ? null
+                                      : () async {
+                                          final db = ref.read(databaseProvider);
+                                          await db.deleteWordGroupLinksByWord(
+                                              info.word.id);
+                                          await db.linkWordToGroup(
+                                              info.word.id, widget.groupId!);
+                                          if (mounted) context.pop();
+                                        },
+                                ))
+                            .toList(),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _meaningCtrl,
                         decoration: const InputDecoration(
                             labelText: 'Meaning',
-                            hintText: 'Enter the meaning / translation (optional)'),
+                            hintText:
+                                'Enter the meaning / translation (optional)'),
                         maxLines: 3,
                       ),
                       const SizedBox(height: 16),
@@ -165,15 +264,13 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                       ),
                       const SizedBox(height: 20),
                       // Word types
-                      Text('Word Types',
-                          style: theme.textTheme.titleSmall),
+                      Text('Word Types', style: theme.textTheme.titleSmall),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 4,
                         children: _allTypes.map((type) {
-                          final selected =
-                              _selectedTypeIds.contains(type.id);
+                          final selected = _selectedTypeIds.contains(type.id);
                           return FilterChip(
                             label: Text(type.name),
                             selected: selected,
@@ -191,15 +288,13 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                       ),
                       const SizedBox(height: 20),
                       // Groups
-                      Text('Groups',
-                          style: theme.textTheme.titleSmall),
+                      Text('Groups', style: theme.textTheme.titleSmall),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 4,
                         children: _allGroups.map((group) {
-                          final selected =
-                              _selectedGroupIds.contains(group.id);
+                          final selected = _selectedGroupIds.contains(group.id);
                           return FilterChip(
                             label: Text(group.name),
                             selected: selected,
@@ -217,8 +312,7 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                       ),
                       const SizedBox(height: 20),
                       // Image
-                      Text('Image',
-                          style: theme.textTheme.titleSmall),
+                      Text('Image', style: theme.textTheme.titleSmall),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -267,6 +361,252 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                 ),
               ),
             ),
+    );
+  }
+}
+// ─── Data class for a matched word + its current group memberships ────────────
+
+class _WordMatchInfo {
+  final Word word;
+  final List<Group> groups;
+  const _WordMatchInfo({required this.word, required this.groups});
+}
+
+// ─── Suggestion card shown when a matching word already exists ───────────────
+
+class _MatchSuggestionCard extends StatelessWidget {
+  final _WordMatchInfo info;
+  final int? groupId;
+  final VoidCallback onClone;
+  final VoidCallback? onAddToGroup;
+  final VoidCallback? onMoveToGroup;
+
+  const _MatchSuggestionCard({
+    required this.info,
+    required this.groupId,
+    required this.onClone,
+    required this.onAddToGroup,
+    required this.onMoveToGroup,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final word = info.word;
+    final isActive = word.isActive;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 4, bottom: 4),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+            color: theme.colorScheme.secondary.withValues(alpha: 0.4)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header row: icon + name + active badge
+            Row(
+              children: [
+                Icon(Icons.info_outline,
+                    size: 15, color: theme.colorScheme.secondary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'Existing: ${word.name}',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.secondary,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Active / Inactive badge
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? Colors.green.shade100
+                        : theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isActive ? Icons.check_circle : Icons.cancel,
+                        size: 11,
+                        color: isActive
+                            ? Colors.green.shade700
+                            : theme.colorScheme.outline,
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        isActive ? 'Active' : 'Inactive',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: isActive
+                              ? Colors.green.shade700
+                              : theme.colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // Meaning
+            if (word.meaning.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(
+                word.meaning,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+            // Groups membership
+            if (info.groups.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.folder_open,
+                      size: 13, color: theme.colorScheme.outline),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      info.groups.map((g) => g.name).join(', '),
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: theme.colorScheme.outline),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            const SizedBox(height: 8),
+            // Action buttons
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                TextButton.icon(
+                  style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact),
+                  icon: const Icon(Icons.copy, size: 16),
+                  label: const Text('Clone'),
+                  onPressed: onClone,
+                ),
+                if (onAddToGroup != null)
+                  FilledButton.tonalIcon(
+                    style: FilledButton.styleFrom(
+                        visualDensity: VisualDensity.compact),
+                    icon: const Icon(Icons.playlist_add, size: 16),
+                    label: const Text('Add to group'),
+                    onPressed: onAddToGroup,
+                  ),
+                if (onMoveToGroup != null)
+                  FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                        visualDensity: VisualDensity.compact),
+                    icon: const Icon(Icons.drive_file_move, size: 16),
+                    label: const Text('Move here'),
+                    onPressed: onMoveToGroup,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+// ─── Warning card for words that already exist in the current group ───────────
+
+class _DuplicateWarningCard extends StatelessWidget {
+  final _WordMatchInfo info;
+
+  const _DuplicateWarningCard({required this.info});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final word = info.word;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 4, bottom: 4),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.orange.shade300),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.warning_amber_rounded,
+                    size: 15, color: Colors.orange.shade700),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    '"${word.name}" already exists in this group',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                        color: Colors.orange.shade800,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: word.isActive
+                        ? Colors.green.shade100
+                        : theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        word.isActive ? Icons.check_circle : Icons.cancel,
+                        size: 11,
+                        color: word.isActive
+                            ? Colors.green.shade700
+                            : theme.colorScheme.outline,
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        word.isActive ? 'Active' : 'Inactive',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: word.isActive
+                              ? Colors.green.shade700
+                              : theme.colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (word.meaning.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(word.meaning,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

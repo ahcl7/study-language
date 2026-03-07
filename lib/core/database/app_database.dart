@@ -291,6 +291,14 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Word>> getAllWords() => select(words).get();
 
+  Future<List<Word>> searchWordsByName(String query) {
+    if (query.trim().isEmpty) return Future.value([]);
+    final q = '%${query.trim().toLowerCase()}%';
+    return (select(words)
+          ..where((w) => w.name.lower().like(q)))
+        .get();
+  }
+
   Stream<List<Word>> watchAllWords() => select(words).watch();
 
   Future<int> insertWord(WordsCompanion w) => into(words).insert(w);
@@ -527,6 +535,15 @@ class AppDatabase extends _$AppDatabase {
     final query = select(wordGroupLinks)..where((l) => l.wordId.equals(wordId));
     final rows = await query.get();
     return rows.map((r) => r.groupId).toList();
+  }
+
+  Future<List<Group>> getGroupsForWord(int wordId) async {
+    final query = select(wordGroupLinks).join([
+      innerJoin(groups, groups.id.equalsExp(wordGroupLinks.groupId)),
+    ])
+      ..where(wordGroupLinks.wordId.equals(wordId));
+    final rows = await query.get();
+    return rows.map((r) => r.readTable(groups)).toList();
   }
 
   Future<List<int>> getTypeIdsForWord(int wordId) async {
