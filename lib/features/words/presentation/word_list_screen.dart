@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,6 +42,136 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
     final db = ref.read(databaseProvider);
     await db.setWordActive(word.id, isActive: !word.isActive);
     _loadWords();
+  }
+
+  Future<void> _exportGroup() async {
+    // Show filter config dialog
+    final config = await showDialog<_ExportConfig>(
+      context: context,
+      builder: (ctx) => _ExportConfigDialog(words: _words),
+    );
+    if (config == null) return; // cancelled
+
+    final filtered = _words.where((w) {
+      if (config.onlyActive && !w.isActive) return false;
+      if (config.onlyInactive && w.isActive) return false;
+      // Completeness filters: OR logic — include if missing meaning OR missing example
+      if (config.missingMeaning || config.missingExample) {
+        final lacksMeaning = config.missingMeaning && w.meaning.trim().isEmpty;
+        final lacksExample = config.missingExample && w.example.trim().isEmpty;
+        if (!lacksMeaning && !lacksExample) return false;
+      }
+      return true;
+    }).toList();
+
+    if (filtered.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No words match the selected filters')),
+        );
+      }
+      return;
+    }
+
+    try {
+      final db = ref.read(databaseProvider);
+      final group = await db.getGroupById(widget.groupId);
+      final exportData = {
+        'group_id': group.id,
+        'group_name': group.name,
+        'exported_at': DateTime.now().toIso8601String(),
+        'filter': config.describe(),
+        'word_count': filtered.length,
+        'words': filtered
+            .map((w) => {
+                  'name': w.name,
+                  'meaning': w.meaning,
+                  'example': w.example,
+                  'isActive': w.isActive,
+                })
+            .toList(),
+      };
+      final json = const JsonEncoder.withIndent('  ').convert(exportData);
+      final groupName = group.name
+          .replaceAll(RegExp(r'[^\w\s-]'), '')
+          .trim()
+          .replaceAll(' ', '_');
+      final result = await FilePicker.platform.saveFile(
+        dialogTitle: 'Export Group Words',
+        fileName: 'group_${groupName}_${config.fileTag()}.json',
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      if (result != null) {
+        await File(result).writeAsString(json);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Exported ${filtered.length} words to: $result')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Export failed: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _importGroup() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Import Words'),
+        content: const Text(
+          'Words in the JSON will be matched by name.\n'
+          '• Existing word → update meaning & example\n'
+          '• New word → inserted and linked to this group\n\n'
+          'Continue?',
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Import')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Import Group Words',
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      if (result == null || result.files.single.path == null) return;
+
+      final file = File(result.files.single.path!);
+      final raw = jsonDecode(await file.readAsString());
+      final wordsData = raw is Map ? raw['words'] as List? : raw as List?;
+      if (wordsData == null) throw 'Invalid format: missing "words" array';
+
+      final db = ref.read(databaseProvider);
+      await db.importGroupWords(widget.groupId, wordsData);
+      await _loadWords();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Imported ${wordsData.length} words')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import failed: $e')),
+        );
+      }
+    }
   }
 
   Future<void> _reorder(int index, int direction) async {
@@ -150,6 +283,18 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Export group',
+            icon: const Icon(Icons.upload_file),
+            onPressed: _exportGroup,
+          ),
+          IconButton(
+            tooltip: 'Import words from JSON',
+            icon: const Icon(Icons.download_for_offline),
+            onPressed: _importGroup,
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
@@ -365,5 +510,152 @@ class _WordListScreenState extends ConsumerState<WordListScreen> {
       await db.deleteWord(word);
       _loadWords();
     }
+  }
+}
+
+// ─── Export config ───
+
+class _ExportConfig {
+  final bool onlyActive;
+  final bool onlyInactive;
+  final bool missingMeaning;
+  final bool missingExample;
+
+  const _ExportConfig({
+    required this.onlyActive,
+    required this.onlyInactive,
+    required this.missingMeaning,
+    required this.missingExample,
+  });
+
+  String describe() {
+    final parts = <String>[];
+    if (onlyActive) parts.add('active only');
+    if (onlyInactive) parts.add('inactive only');
+    if (missingMeaning) parts.add('missing meaning');
+    if (missingExample) parts.add('missing example');
+    return parts.isEmpty ? 'all words' : parts.join(', ');
+  }
+
+  String fileTag() {
+    final parts = <String>[];
+    if (onlyActive) parts.add('active');
+    if (onlyInactive) parts.add('inactive');
+    if (missingMeaning) parts.add('no_meaning');
+    if (missingExample) parts.add('no_example');
+    return parts.isEmpty ? 'all' : parts.join('_');
+  }
+}
+
+class _ExportConfigDialog extends StatefulWidget {
+  final List<Word> words;
+  const _ExportConfigDialog({required this.words});
+
+  @override
+  State<_ExportConfigDialog> createState() => _ExportConfigDialogState();
+}
+
+class _ExportConfigDialogState extends State<_ExportConfigDialog> {
+  bool _onlyActive = false;
+  bool _onlyInactive = false;
+  bool _missingMeaning = false;
+  bool _missingExample = false;
+
+  int get _matchCount {
+    return widget.words.where((w) {
+      if (_onlyActive && !w.isActive) return false;
+      if (_onlyInactive && w.isActive) return false;
+      // Completeness filters: OR logic
+      if (_missingMeaning || _missingExample) {
+        final lacksMeaning = _missingMeaning && w.meaning.trim().isEmpty;
+        final lacksExample = _missingExample && w.example.trim().isEmpty;
+        if (!lacksMeaning && !lacksExample) return false;
+      }
+      return true;
+    }).length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AlertDialog(
+      title: const Text('Export Config'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Filter by status', style: theme.textTheme.labelLarge),
+            CheckboxListTile(
+              dense: true,
+              title: const Text('Active words only'),
+              value: _onlyActive,
+              onChanged: (v) => setState(() {
+                _onlyActive = v!;
+                if (v) _onlyInactive = false;
+              }),
+            ),
+            CheckboxListTile(
+              dense: true,
+              title: const Text('Inactive words only'),
+              value: _onlyInactive,
+              onChanged: (v) => setState(() {
+                _onlyInactive = v!;
+                if (v) _onlyActive = false;
+              }),
+            ),
+            const Divider(),
+            Text('Filter by completeness', style: theme.textTheme.labelLarge),
+            CheckboxListTile(
+              dense: true,
+              title: const Text('Missing meaning'),
+              subtitle: const Text('meaning is empty'),
+              value: _missingMeaning,
+              onChanged: (v) => setState(() => _missingMeaning = v!),
+            ),
+            CheckboxListTile(
+              dense: true,
+              title: const Text('Missing example'),
+              subtitle: const Text('example sentence is empty'),
+              value: _missingExample,
+              onChanged: (v) => setState(() => _missingExample = v!),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                'Words to export: $_matchCount / ${widget.words.length}',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: _matchCount == 0
+                      ? theme.colorScheme.error
+                      : theme.colorScheme.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _matchCount == 0
+              ? null
+              : () => Navigator.pop(
+                    context,
+                    _ExportConfig(
+                      onlyActive: _onlyActive,
+                      onlyInactive: _onlyInactive,
+                      missingMeaning: _missingMeaning,
+                      missingExample: _missingExample,
+                    ),
+                  ),
+          child: const Text('Export'),
+        ),
+      ],
+    );
   }
 }

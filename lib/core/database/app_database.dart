@@ -245,6 +245,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Group>> getAllGroups() => select(groups).get();
 
+  Future<Group> getGroupById(int groupId) =>
+      (select(groups)..where((g) => g.id.equals(groupId))).getSingle();
+
   Future<int> insertGroup(GroupsCompanion g) async {
     final existing = await getGroupsByClass((g.classId as Value<int>).value);
     final nextOrder = existing.isEmpty
@@ -347,8 +350,8 @@ class AppDatabase extends _$AppDatabase {
   /// Cost: usually **1 UPDATE** (midpoint between neighbors).
   /// Falls back to renormalize (n+1 updates) only when the integer gap is
   /// exhausted — which is very rare with a gap seed of 1 000.
-  Future<void> moveWordToPositionInGroup(
-      int wordId, int groupId, {required int? afterWordId}) async {
+  Future<void> moveWordToPositionInGroup(int wordId, int groupId,
+      {required int? afterWordId}) async {
     // All links ordered by sortOrder, excluding the word being moved
     final allRows = await (select(wordGroupLinks)
           ..where((l) => l.groupId.equals(groupId))
@@ -376,9 +379,11 @@ class AppDatabase extends _$AppDatabase {
         } else {
           // Gap exhausted: renormalize entire group with gap=1000000, then midpoint
           for (int i = 0; i < others.length; i++) {
-            await updateWordSortOrderInGroup(others[i].wordId, groupId, i * 1000000);
+            await updateWordSortOrderInGroup(
+                others[i].wordId, groupId, i * 1000000);
           }
-          newOrder = idx * 1000000 + 500000; // sits exactly between idx and idx+1
+          newOrder =
+              idx * 1000000 + 500000; // sits exactly between idx and idx+1
         }
       }
     }
@@ -546,6 +551,72 @@ class AppDatabase extends _$AppDatabase {
   Future<bool> updateParagraph(Paragraph p) => update(paragraphs).replace(p);
 
   Future<int> deleteParagraph(Paragraph p) => delete(paragraphs).delete(p);
+
+  // ─── Group export / import ───
+
+  /// Export one group's words to a human/AI-readable map.
+  Future<Map<String, dynamic>> exportGroup(int groupId) async {
+    final group =
+        await (select(groups)..where((g) => g.id.equals(groupId))).getSingle();
+    final wordList = await getWordsByGroup(groupId);
+    return {
+      'group_id': group.id,
+      'group_name': group.name,
+      'exported_at': DateTime.now().toIso8601String(),
+      'words': wordList
+          .map((w) => {
+                'name': w.name,
+                'meaning': w.meaning,
+                'example': w.example,
+                'isActive': w.isActive,
+              })
+          .toList(),
+    };
+  }
+
+  /// Import words from exported map back into a group.
+  /// Match by [name] (case-sensitive):
+  ///   - word linked to group → update meaning + example
+  ///   - word exists in DB but not linked → update + link
+  ///   - word doesn't exist → insert + link
+  Future<void> importGroupWords(int groupId, List<dynamic> wordsData) async {
+    for (final raw in wordsData) {
+      final item = raw as Map<String, dynamic>;
+      final name = (item['name'] as String? ?? '').trim();
+      if (name.isEmpty) continue;
+      final meaning = item['meaning'] as String? ?? '';
+      final example = item['example'] as String? ?? '';
+      final isActive = item['isActive'] as bool? ?? true;
+
+      // Check if word already exists in DB
+      final existing = await (select(words)
+            ..where((w) => w.name.equals(name))
+            ..limit(1))
+          .getSingleOrNull();
+
+      int wordId;
+      if (existing != null) {
+        // Update meaning + example
+        await updateWord(existing.copyWith(
+          meaning: meaning,
+          example: example,
+          isActive: isActive,
+        ));
+        wordId = existing.id;
+      } else {
+        // Insert new word
+        wordId = await into(words).insert(WordsCompanion.insert(
+          name: name,
+          meaning: meaning,
+          example: Value(example),
+          isActive: Value(isActive),
+        ));
+      }
+
+      // Ensure linked to group (idempotent via insertOrIgnore)
+      await linkWordToGroup(wordId, groupId);
+    }
+  }
 
   // ─── Backup / Restore helpers ───
 
