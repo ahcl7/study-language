@@ -435,8 +435,8 @@
     {
       "id": 21,
       "name": "でんき",
-      "meaning": "Điện, điện khí",
-      "example": "さくらでんきは でんきの かいしゃ です。",
+      "meaning": "Điện",
+      "example": "でんきを けしてください。👉 Hãy tắt điện.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:08.000"
@@ -579,8 +579,8 @@
     {
       "id": 37,
       "name": "あれ",
-      "meaning": "Cái kia",
-      "example": "あれは とけい です。",
+      "meaning": "Ơ, ủa",
+      "example": "あれ、かぎが ない。👉 Ơ, không thấy chìa khóa.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:08.000"
@@ -2091,8 +2091,8 @@
     {
       "id": 205,
       "name": "とります",
-      "meaning": "Chụp (ảnh)",
-      "example": "しゃしんを とります。",
+      "meaning": "Lấy",
+      "example": "しおを とって ください。👉 Hãy lấy giúp tôi muối.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:08.000"
@@ -2505,8 +2505,8 @@
     {
       "id": 251,
       "name": "おしえます",
-      "meaning": "Dạy, chỉ",
-      "example": "にほんごを おしえます。",
+      "meaning": "Chỉ (đường, cách)",
+      "example": "じゅうしょを おしえて ください。👉 Hãy cho tôi biết địa chỉ.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:08.000"
@@ -5197,7 +5197,7 @@
       "id": 550,
       "name": "つけます",
       "meaning": "Bật (đèn, TV)",
-      "example": "エアコンを つけます。",
+      "example": "エアコンを つけます。👉 Tôi bật điều hòa.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5206,7 +5206,7 @@
       "id": 551,
       "name": "けします",
       "meaning": "Tắt (đèn, TV)",
-      "example": "テレビを けします。",
+      "example": "テレビを けします。👉 Tôi tắt TV.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5215,7 +5215,7 @@
       "id": 552,
       "name": "あけます",
       "meaning": "Mở (cửa, cửa sổ)",
-      "example": "まどを あけます。",
+      "example": "まどを あけます。👉 Tôi mở cửa sổ.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5224,7 +5224,7 @@
       "id": 553,
       "name": "しめます",
       "meaning": "Đóng (cửa, cửa sổ)",
-      "example": "ドアを しめます。",
+      "example": "ドアを しめます。👉 Tôi đóng cửa.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5233,7 +5233,7 @@
       "id": 554,
       "name": "いそぎます",
       "meaning": "Vội, nhanh lên",
-      "example": "いそいで ください。",
+      "example": "いそいで ください。👉 Xin hãy nhanh lên.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5242,7 +5242,7 @@
       "id": 555,
       "name": "まちます",
       "meaning": "Chờ, đợi",
-      "example": "ちょっと まって ください。",
+      "example": "ちょっと まって ください。👉 Xin hãy đợi một chút.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5250,8 +5250,8 @@
     {
       "id": 556,
       "name": "とめます",
-      "meaning": "Dừng, tắt (máy)",
-      "example": "くるまを とめて ください。",
+      "meaning": "Dừng, đỗ (xe)",
+      "example": "くるまを とめて ください。👉 Hãy dừng xe.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5260,7 +5260,7 @@
       "id": 557,
       "name": "もちます",
       "meaning": "Cầm, mang",
-      "example": "にもつを もって ください。",
+      "example": "にもつを もって ください。👉 Hãy cầm hành lý.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5278,7 +5278,7 @@
       "id": 559,
       "name": "てつだいます",
       "meaning": "Giúp đỡ",
-      "example": "てつだって ください。",
+      "example": "てつだって ください。👉 Hãy giúp tôi.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5287,7 +5287,7 @@
       "id": 560,
       "name": "よびます",
       "meaning": "Gọi",
-      "example": "タクシーを よんで ください。",
+      "example": "タクシーを よんで ください。👉 Hãy gọi taxi.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5296,7 +5296,7 @@
       "id": 561,
       "name": "はなします",
       "meaning": "Nói",
-      "example": "ゆっくり はなして ください。",
+      "example": "ゆっくり はなして ください。👉 Hãy nói chậm thôi.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5305,7 +5305,7 @@
       "id": 562,
       "name": "つかいます",
       "meaning": "Sử dụng",
-      "example": "パソコンを つかいます。",
+      "example": "パソコンを つかいます。👉 Tôi sử dụng máy tính.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5316,14 +5316,14 @@
       "meaning": "Rẽ, quẹo",
       "example": "つぎの かどを みぎへ まがって ください。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
       "id": 564,
       "name": "みせます",
       "meaning": "Cho xem",
-      "example": "パスポートを みせて ください。",
+      "example": "パスポートを みせて ください。👉 Hãy cho tôi xem hộ chiếu.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5341,7 +5341,7 @@
       "id": 566,
       "name": "すわります",
       "meaning": "Ngồi",
-      "example": "ここに すわって ください。",
+      "example": "ここに すわって ください。👉 Hãy ngồi ở đây.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5350,7 +5350,7 @@
       "id": 567,
       "name": "たちます",
       "meaning": "Đứng",
-      "example": "たって ください。",
+      "example": "たって ください。👉 Hãy đứng lên.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5359,7 +5359,7 @@
       "id": 568,
       "name": "はいります",
       "meaning": "Vào",
-      "example": "へやに はいって ください。",
+      "example": "へやに はいって ください。👉 Hãy vào phòng.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5368,7 +5368,7 @@
       "id": 569,
       "name": "でます",
       "meaning": "Ra",
-      "example": "へやを でて ください。",
+      "example": "へやを でて ください。👉 Hãy ra khỏi phòng.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5379,14 +5379,14 @@
       "meaning": "Uống (thuốc)",
       "example": "くすりを のんで ください。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
       "id": 571,
       "name": "しお",
       "meaning": "Muối",
-      "example": "しおを とって ください。",
+      "example": "しおを とって ください。👉 Hãy đưa tôi muối.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5395,7 +5395,7 @@
       "id": 572,
       "name": "さとう",
       "meaning": "Đường",
-      "example": "さとうを いれて ください。",
+      "example": "コーヒーに さとうを いれます。👉 Tôi cho đường vào cà phê.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5404,7 +5404,7 @@
       "id": 573,
       "name": "エアコン",
       "meaning": "Điều hòa",
-      "example": "エアコンを つけて ください。",
+      "example": "エアコンを つけて ください。👉 Hãy bật điều hòa.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5413,7 +5413,7 @@
       "id": 574,
       "name": "パスポート",
       "meaning": "Hộ chiếu",
-      "example": "パスポートを みせて ください。",
+      "example": "パスポートを みせて ください。👉 Hãy cho xem hộ chiếu.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5422,7 +5422,7 @@
       "id": 575,
       "name": "なまえ",
       "meaning": "Tên",
-      "example": "ここに なまえを かいて ください。",
+      "example": "ここに なまえを かいて ください。👉 Hãy viết tên vào đây.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5431,7 +5431,7 @@
       "id": 576,
       "name": "じゅうしょ",
       "meaning": "Địa chỉ",
-      "example": "じゅうしょを おしえて ください。",
+      "example": "じゅうしょを おしえて ください。👉 Hãy cho tôi biết địa chỉ.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5440,7 +5440,7 @@
       "id": 577,
       "name": "ちず",
       "meaning": "Bản đồ",
-      "example": "ちずを かいて ください。",
+      "example": "ちずを みせて ください。👉 Hãy cho tôi xem bản đồ.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5478,7 +5478,7 @@
       "meaning": "Đường",
       "example": "この みちを まっすぐ いって ください。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5496,14 +5496,14 @@
       "meaning": "Đèn giao thông",
       "example": "しんごうを みぎへ まがって ください。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
       "id": 584,
       "name": "まっすぐ",
       "meaning": "Thẳng",
-      "example": "まっすぐ いって ください。",
+      "example": "まっすぐ いって ください。👉 Hãy đi thẳng.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5511,8 +5511,8 @@
     {
       "id": 585,
       "name": "ゆっくり",
-      "meaning": "Chậm rãi, thong thả",
-      "example": "ゆっくり はなして ください。",
+      "meaning": "Chậm rãi",
+      "example": "ゆっくり はなして ください。👉 Hãy nói chậm.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5520,8 +5520,8 @@
     {
       "id": 586,
       "name": "すぐ",
-      "meaning": "Ngay",
-      "example": "すぐ きて ください。",
+      "meaning": "Ngay lập tức",
+      "example": "すぐ きて ください。👉 Hãy đến ngay.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5530,7 +5530,7 @@
       "id": 587,
       "name": "また",
       "meaning": "Lại, nữa",
-      "example": "また あした。",
+      "example": "また あした。👉 Hẹn gặp lại ngày mai.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5541,7 +5541,7 @@
       "meaning": "Sau khi ～",
       "example": "ごはんを たべてから、べんきょうします。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5550,7 +5550,7 @@
       "meaning": "Một lần nữa",
       "example": "もういちど おねがいします。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5559,14 +5559,14 @@
       "meaning": "Được, tốt thôi",
       "example": "いいですよ。どうぞ。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
       "id": 591,
       "name": "さあ",
-      "meaning": "Nào (kêu gọi)",
-      "example": "さあ、いきましょう。",
+      "meaning": "Nào",
+      "example": "さあ、いきましょう。👉 Nào, chúng ta đi thôi.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5586,7 +5586,7 @@
       "meaning": "Đang sống",
       "example": "おおさかに すんでいます。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5595,7 +5595,7 @@
       "meaning": "Đang làm việc tại",
       "example": "ぎんこうに つとめています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5604,14 +5604,14 @@
       "meaning": "Đã kết hôn",
       "example": "はい、けっこんしています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
       "id": 596,
       "name": "もっています",
       "meaning": "Đang có, sở hữu",
-      "example": "くるまを もっていますか。",
+      "example": "くるまを もっていますか。👉 Bạn có ô tô không?",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5629,7 +5629,7 @@
       "id": 598,
       "name": "コピーします",
       "meaning": "Sao chép",
-      "example": "しりょうを コピーします。",
+      "example": "しりょうを コピーします。👉 Tôi photocopy tài liệu.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -5640,7 +5640,7 @@
       "meaning": "Tắt đèn",
       "example": "でんきを けして ください。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5649,7 +5649,7 @@
       "meaning": "Xin lỗi nhưng",
       "example": "すみませんが、しおを とって ください。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5658,7 +5658,7 @@
       "meaning": "Đang đứng",
       "example": "おとこのひとが たっています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5667,7 +5667,7 @@
       "meaning": "Đang ngồi",
       "example": "おんなのひとが すわっています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5676,7 +5676,7 @@
       "meaning": "Đang bán",
       "example": "あの みせで パンを うっています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5685,7 +5685,7 @@
       "meaning": "Béo, mập",
       "example": "あの ひとは ふとい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5694,7 +5694,7 @@
       "meaning": "Gầy, mảnh",
       "example": "かのじょは ほそい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5712,7 +5712,7 @@
       "meaning": "Người lớn",
       "example": "おとなが ３にん います。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5721,7 +5721,7 @@
       "meaning": "Quần áo kiểu Tây",
       "example": "あたらしい ようふくを きています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5730,7 +5730,7 @@
       "meaning": "Đang mặc",
       "example": "あかい セーターを きています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5739,7 +5739,7 @@
       "meaning": "Đang đi, mang (giày, quần)",
       "example": "くろい くつを はいています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5757,7 +5757,7 @@
       "meaning": "Đang đeo (kính)",
       "example": "めがねを かけています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5775,7 +5775,7 @@
       "meaning": "Mũ, nón",
       "example": "しろい ぼうしを かぶっています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5784,7 +5784,7 @@
       "meaning": "Kính",
       "example": "めがねを かけて います。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5793,7 +5793,7 @@
       "meaning": "Rõ, kỹ",
       "example": "よく わかりません。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5802,7 +5802,7 @@
       "meaning": "～ ấy, ～ đó (đã biết)",
       "example": "あの ひとは だれ ですか。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5811,7 +5811,7 @@
       "meaning": "Nhưng mà",
       "example": "あしたは やすみ ですけど、どこも いきません。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5820,7 +5820,7 @@
       "meaning": "Áo khoác",
       "example": "くろい コートを きています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -5829,7 +5829,7 @@
       "meaning": "Váy",
       "example": "あかい スカートを はいています。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6007,9 +6007,9 @@
       "id": 640,
       "name": "おつり",
       "meaning": "Tiền thừa",
-      "example": "おつりを もらいました。\n👉 Tôi đã nhận được tiền thừa.",
+      "example": "おつりを もらいました。👉 Tôi đã nhận tiền thừa.",
       "imagePath": null,
-      "isActive": false,
+      "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -8877,8 +8877,8 @@
     {
       "id": 960,
       "name": "もんだい",
-      "meaning": "Câu hỏi",
-      "example": "",
+      "meaning": "Câu hỏi, vấn đề",
+      "example": "この もんだいは むずかしいです。👉 Câu hỏi này khó.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -8886,8 +8886,8 @@
     {
       "id": 961,
       "name": "こたえ",
-      "meaning": "câu trả lời",
-      "example": "",
+      "meaning": "Câu trả lời",
+      "example": "こたえを かいて ください。👉 Hãy viết câu trả lời.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -8895,8 +8895,8 @@
     {
       "id": 962,
       "name": "よみかた",
-      "meaning": "cách đọc",
-      "example": "",
+      "meaning": "Cách đọc",
+      "example": "この かんじの よみかたを おしえて ください。👉 Hãy chỉ tôi cách đọc chữ kanji này.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -8904,8 +8904,8 @@
     {
       "id": 963,
       "name": "～かた",
-      "meaning": "cách ~",
-      "example": "",
+      "meaning": "Cách ~",
+      "example": "すしの つくりかたを おしえて ください。👉 Hãy chỉ tôi cách làm sushi.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -8913,8 +8913,8 @@
     {
       "id": 964,
       "name": "あとで",
-      "meaning": "sau",
-      "example": "しごとの あとで、えいがを みます。\n→ Sau giờ làm, tôi xem phim.",
+      "meaning": "Sau đó",
+      "example": "あとで でんわします。👉 Tôi sẽ gọi điện sau.",
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
@@ -9314,6 +9314,51 @@
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-07T14:31:17.000"
+    },
+    {
+      "id": 1013,
+      "name": "ふります",
+      "meaning": "Rơi (mưa, tuyết)",
+      "example": "あめが ふっています。👉 Trời đang mưa.",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-08T13:57:16.000"
+    },
+    {
+      "id": 1014,
+      "name": "もうすこし",
+      "meaning": "Thêm một chút",
+      "example": "もうすこし まって ください。👉 Hãy đợi thêm một chút.",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-08T13:57:59.000"
+    },
+    {
+      "id": 1015,
+      "name": "もう～",
+      "meaning": "Thêm / nữa",
+      "example": "もう いっぱい コーヒーを のみます。👉 Tôi uống thêm một cốc cà phê.",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-08T13:58:09.000"
+    },
+    {
+      "id": 1016,
+      "name": "しんごうをみぎへまがってください",
+      "meaning": "Hãy rẽ phải ở đèn giao thông",
+      "example": "しんごうを みぎへ まがって ください。👉 Hãy rẽ phải ở đèn giao thông.",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-08T13:58:35.000"
+    },
+    {
+      "id": 1017,
+      "name": "これでおねがいします",
+      "meaning": "Tôi trả bằng số tiền này",
+      "example": "これで おねがいします。👉 Tôi trả bằng số tiền này.",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-08T13:58:55.000"
     }
   ],
   "wordGroupLinks": [
@@ -12020,342 +12065,342 @@
     {
       "wordId": 550,
       "groupId": 15,
-      "sortOrder": 1
+      "sortOrder": 0
     },
     {
       "wordId": 551,
       "groupId": 15,
-      "sortOrder": 2
+      "sortOrder": 1000000
     },
     {
       "wordId": 552,
       "groupId": 15,
-      "sortOrder": 3
+      "sortOrder": 2000000
     },
     {
       "wordId": 553,
       "groupId": 15,
-      "sortOrder": 4
+      "sortOrder": 3000000
     },
     {
       "wordId": 554,
       "groupId": 15,
-      "sortOrder": 5
+      "sortOrder": 4000000
     },
     {
       "wordId": 555,
       "groupId": 15,
-      "sortOrder": 6
+      "sortOrder": 5000000
     },
     {
       "wordId": 556,
       "groupId": 15,
-      "sortOrder": 7
+      "sortOrder": 12000000
     },
     {
       "wordId": 557,
       "groupId": 15,
-      "sortOrder": 8
+      "sortOrder": 6000000
     },
     {
       "wordId": 558,
       "groupId": 15,
-      "sortOrder": 9
+      "sortOrder": 7000000
     },
     {
       "wordId": 559,
       "groupId": 15,
-      "sortOrder": 10
+      "sortOrder": 8000000
     },
     {
       "wordId": 560,
       "groupId": 15,
-      "sortOrder": 11
+      "sortOrder": 9000000
     },
     {
       "wordId": 561,
       "groupId": 15,
-      "sortOrder": 12
+      "sortOrder": 10000000
     },
     {
       "wordId": 562,
       "groupId": 15,
-      "sortOrder": 13
+      "sortOrder": 11000000
     },
     {
       "wordId": 563,
       "groupId": 15,
-      "sortOrder": 14
+      "sortOrder": 13000000
     },
     {
       "wordId": 564,
       "groupId": 15,
-      "sortOrder": 15
+      "sortOrder": 14000000
     },
     {
       "wordId": 565,
       "groupId": 15,
-      "sortOrder": 16
+      "sortOrder": 15000000
     },
     {
       "wordId": 566,
       "groupId": 15,
-      "sortOrder": 17
+      "sortOrder": 16000000
     },
     {
       "wordId": 567,
       "groupId": 15,
-      "sortOrder": 18
+      "sortOrder": 17000000
     },
     {
       "wordId": 568,
       "groupId": 15,
-      "sortOrder": 19
+      "sortOrder": 18000000
     },
     {
       "wordId": 569,
       "groupId": 15,
-      "sortOrder": 20
+      "sortOrder": 19000000
     },
     {
       "wordId": 570,
       "groupId": 15,
-      "sortOrder": 21
+      "sortOrder": 20000000
     },
     {
       "wordId": 571,
       "groupId": 15,
-      "sortOrder": 22
+      "sortOrder": 21000000
     },
     {
       "wordId": 572,
       "groupId": 15,
-      "sortOrder": 23
+      "sortOrder": 22000000
     },
     {
       "wordId": 573,
       "groupId": 15,
-      "sortOrder": 24
+      "sortOrder": 19937500
     },
     {
       "wordId": 574,
       "groupId": 15,
-      "sortOrder": 25
+      "sortOrder": 19968750
     },
     {
       "wordId": 575,
       "groupId": 15,
-      "sortOrder": 26
+      "sortOrder": 19984375
     },
     {
       "wordId": 576,
       "groupId": 15,
-      "sortOrder": 27
+      "sortOrder": 19992187
     },
     {
       "wordId": 577,
       "groupId": 15,
-      "sortOrder": 28
+      "sortOrder": 19996093
     },
     {
       "wordId": 580,
       "groupId": 15,
-      "sortOrder": 31
+      "sortOrder": 28000000
     },
     {
       "wordId": 581,
       "groupId": 15,
-      "sortOrder": 32
+      "sortOrder": 29000000
     },
     {
       "wordId": 582,
       "groupId": 15,
-      "sortOrder": 33
+      "sortOrder": 30000000
     },
     {
       "wordId": 583,
       "groupId": 15,
-      "sortOrder": 34
+      "sortOrder": 31000000
     },
     {
       "wordId": 584,
       "groupId": 15,
-      "sortOrder": 35
+      "sortOrder": 32000000
     },
     {
       "wordId": 585,
       "groupId": 15,
-      "sortOrder": 36
+      "sortOrder": 33000000
     },
     {
       "wordId": 586,
       "groupId": 15,
-      "sortOrder": 37
+      "sortOrder": 34000000
     },
     {
       "wordId": 587,
       "groupId": 15,
-      "sortOrder": 38
+      "sortOrder": 35000000
     },
     {
       "wordId": 588,
       "groupId": 15,
-      "sortOrder": 39
+      "sortOrder": 36000000
     },
     {
       "wordId": 589,
       "groupId": 15,
-      "sortOrder": 40
+      "sortOrder": 37000000
     },
     {
       "wordId": 590,
       "groupId": 15,
-      "sortOrder": 41
+      "sortOrder": 38000000
     },
     {
       "wordId": 591,
       "groupId": 15,
-      "sortOrder": 42
+      "sortOrder": 39000000
     },
     {
       "wordId": 592,
       "groupId": 15,
-      "sortOrder": 43
+      "sortOrder": 40000000
     },
     {
       "wordId": 593,
       "groupId": 15,
-      "sortOrder": 44
+      "sortOrder": 41000000
     },
     {
       "wordId": 594,
       "groupId": 15,
-      "sortOrder": 45
+      "sortOrder": 42000000
     },
     {
       "wordId": 595,
       "groupId": 15,
-      "sortOrder": 46
+      "sortOrder": 43000000
     },
     {
       "wordId": 596,
       "groupId": 15,
-      "sortOrder": 47
+      "sortOrder": 78000001
     },
     {
       "wordId": 597,
       "groupId": 15,
-      "sortOrder": 48
+      "sortOrder": 45000000
     },
     {
       "wordId": 598,
       "groupId": 15,
-      "sortOrder": 49
+      "sortOrder": 19750000
     },
     {
       "wordId": 599,
       "groupId": 15,
-      "sortOrder": 50
+      "sortOrder": 47000000
     },
     {
       "wordId": 600,
       "groupId": 15,
-      "sortOrder": 51
+      "sortOrder": 48000000
     },
     {
       "wordId": 601,
       "groupId": 15,
-      "sortOrder": 52
+      "sortOrder": 49000000
     },
     {
       "wordId": 602,
       "groupId": 15,
-      "sortOrder": 53
+      "sortOrder": 50000000
     },
     {
       "wordId": 603,
       "groupId": 15,
-      "sortOrder": 54
+      "sortOrder": 51000000
     },
     {
       "wordId": 604,
       "groupId": 15,
-      "sortOrder": 55
+      "sortOrder": 52000000
     },
     {
       "wordId": 605,
       "groupId": 15,
-      "sortOrder": 56
+      "sortOrder": 53000000
     },
     {
       "wordId": 607,
       "groupId": 15,
-      "sortOrder": 57
+      "sortOrder": 54000000
     },
     {
       "wordId": 608,
       "groupId": 15,
-      "sortOrder": 58
+      "sortOrder": 55000000
     },
     {
       "wordId": 609,
       "groupId": 15,
-      "sortOrder": 59
+      "sortOrder": 56000000
     },
     {
       "wordId": 610,
       "groupId": 15,
-      "sortOrder": 60
+      "sortOrder": 57000000
     },
     {
       "wordId": 611,
       "groupId": 15,
-      "sortOrder": 61
+      "sortOrder": 58000000
     },
     {
       "wordId": 612,
       "groupId": 15,
-      "sortOrder": 62
+      "sortOrder": 59000000
     },
     {
       "wordId": 613,
       "groupId": 15,
-      "sortOrder": 63
+      "sortOrder": 60000000
     },
     {
       "wordId": 614,
       "groupId": 15,
-      "sortOrder": 64
+      "sortOrder": 61000000
     },
     {
       "wordId": 615,
       "groupId": 15,
-      "sortOrder": 65
+      "sortOrder": 62000000
     },
     {
       "wordId": 616,
       "groupId": 15,
-      "sortOrder": 66
+      "sortOrder": 63000000
     },
     {
       "wordId": 617,
       "groupId": 15,
-      "sortOrder": 67
+      "sortOrder": 64000000
     },
     {
       "wordId": 618,
       "groupId": 15,
-      "sortOrder": 68
+      "sortOrder": 65000000
     },
     {
       "wordId": 619,
       "groupId": 15,
-      "sortOrder": 69
+      "sortOrder": 66000000
     },
     {
       "wordId": 620,
       "groupId": 15,
-      "sortOrder": 70
+      "sortOrder": 67000000
     },
     {
       "wordId": 621,
@@ -12393,11 +12438,6 @@
       "sortOrder": 14
     },
     {
-      "wordId": 635,
-      "groupId": 16,
-      "sortOrder": 22
-    },
-    {
       "wordId": 637,
       "groupId": 16,
       "sortOrder": 24
@@ -12411,11 +12451,6 @@
       "wordId": 639,
       "groupId": 16,
       "sortOrder": 26
-    },
-    {
-      "wordId": 640,
-      "groupId": 16,
-      "sortOrder": 27
     },
     {
       "wordId": 641,
@@ -13955,32 +13990,32 @@
     {
       "wordId": 21,
       "groupId": 15,
-      "sortOrder": 0
+      "sortOrder": 19875000
     },
     {
       "wordId": 960,
       "groupId": 15,
-      "sortOrder": 71
+      "sortOrder": 25000000
     },
     {
       "wordId": 961,
       "groupId": 15,
-      "sortOrder": 72
+      "sortOrder": 26500000
     },
     {
       "wordId": 962,
       "groupId": 15,
-      "sortOrder": 73
+      "sortOrder": 27250000
     },
     {
       "wordId": 963,
       "groupId": 15,
-      "sortOrder": 74
+      "sortOrder": 27625000
     },
     {
       "wordId": 964,
       "groupId": 15,
-      "sortOrder": 75
+      "sortOrder": 35500000
     },
     {
       "wordId": 661,
@@ -14386,6 +14421,51 @@
       "wordId": 682,
       "groupId": 18,
       "sortOrder": 53
+    },
+    {
+      "wordId": 1013,
+      "groupId": 15,
+      "sortOrder": 19500000
+    },
+    {
+      "wordId": 1014,
+      "groupId": 15,
+      "sortOrder": 35750000
+    },
+    {
+      "wordId": 1015,
+      "groupId": 15,
+      "sortOrder": 35875000
+    },
+    {
+      "wordId": 1016,
+      "groupId": 15,
+      "sortOrder": 76000000
+    },
+    {
+      "wordId": 1017,
+      "groupId": 15,
+      "sortOrder": 77000000
+    },
+    {
+      "wordId": 640,
+      "groupId": 15,
+      "sortOrder": 78000000
+    },
+    {
+      "wordId": 205,
+      "groupId": 15,
+      "sortOrder": 78000002
+    },
+    {
+      "wordId": 251,
+      "groupId": 15,
+      "sortOrder": 78000003
+    },
+    {
+      "wordId": 37,
+      "groupId": 15,
+      "sortOrder": 78000004
     }
   ],
   "wordTypeLinks": [
