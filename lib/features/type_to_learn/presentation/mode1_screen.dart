@@ -17,7 +17,7 @@ class Mode1Screen extends ConsumerStatefulWidget {
 class _Mode1ScreenState extends ConsumerState<Mode1Screen>
     with TickerProviderStateMixin {
   String _filterType = 'class';
-  int? _selectedId;
+  Set<int> _selectedIds = {};
   bool _started = false;
 
   List<ClassesData> _classes = [];
@@ -71,22 +71,26 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
   }
 
   Future<void> _startGame() async {
-    if (_selectedId == null) return;
+    if (_selectedIds.isEmpty) return;
     final db = ref.read(databaseProvider);
 
-    List<Word> words;
-    switch (_filterType) {
-      case 'class':
-        words = await db.getActiveWordsByClass(_selectedId!);
-        break;
-      case 'group':
-        words = await db.getActiveWordsByGroup(_selectedId!);
-        break;
-      case 'type':
-        words = await db.getActiveWordsByType(_selectedId!);
-        break;
-      default:
-        words = [];
+    List<Word> words = [];
+    for (final id in _selectedIds) {
+      List<Word> chunk;
+      switch (_filterType) {
+        case 'class':
+          chunk = await db.getActiveWordsByClass(id);
+          break;
+        case 'group':
+          chunk = await db.getActiveWordsByGroup(id);
+          break;
+        case 'type':
+          chunk = await db.getActiveWordsByType(id);
+          break;
+        default:
+          chunk = [];
+      }
+      words.addAll(chunk);
     }
 
     final seen = <int>{};
@@ -294,38 +298,21 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
   }
 
   Widget _buildConfig(ThemeData theme) {
-    List<DropdownMenuItem<int>> items;
-    switch (_filterType) {
-      case 'class':
-        items = _classes
-            .map((c) => DropdownMenuItem<int>(value: c.id, child: Text(c.name)))
-            .toList();
-        break;
-      case 'group':
-        items = _groups
-            .map((g) => DropdownMenuItem<int>(value: g.id, child: Text(g.name)))
-            .toList();
-        break;
-      case 'type':
-        items = _wordTypes
-            .map((t) => DropdownMenuItem<int>(value: t.id, child: Text(t.name)))
-            .toList();
-        break;
-      default:
-        items = [];
-    }
-
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 8),
               Icon(Icons.cloud, size: 64, color: theme.colorScheme.primary),
               const SizedBox(height: 16),
-              Text('Floating Words', style: theme.textTheme.headlineSmall),
+              Text('Floating Words',
+                  style: theme.textTheme.headlineSmall,
+                  textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text('Words float across the screen. Type them to dismiss!',
                   style: theme.textTheme.bodyMedium,
@@ -340,28 +327,94 @@ class _Mode1ScreenState extends ConsumerState<Mode1Screen>
                 selected: {_filterType},
                 onSelectionChanged: (v) => setState(() {
                   _filterType = v.first;
-                  _selectedId = null;
+                  _selectedIds = {};
                 }),
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<int>(
-                value: _selectedId,
-                decoration: const InputDecoration(labelText: 'Select'),
-                items: items,
-                onChanged: (v) => setState(() => _selectedId = v),
-              ),
+              _buildMultiSelect(theme),
               const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _selectedId == null ? null : _startGame,
-                  child: const Text('Start'),
-                ),
+              ElevatedButton(
+                onPressed: _selectedIds.isEmpty ? null : _startGame,
+                child: const Text('Start'),
               ),
+              const SizedBox(height: 16),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMultiSelect(ThemeData theme) {
+    List<({int id, String label})> options;
+    switch (_filterType) {
+      case 'class':
+        options = _classes.map((c) => (id: c.id, label: c.name)).toList();
+        break;
+      case 'group':
+        options = _groups.map((g) => (id: g.id, label: g.name)).toList();
+        break;
+      case 'type':
+        options = _wordTypes.map((t) => (id: t.id, label: t.name)).toList();
+        break;
+      default:
+        options = [];
+    }
+
+    if (options.isEmpty) {
+      return Text('No options available',
+          style: theme.textTheme.bodySmall
+              ?.copyWith(color: theme.colorScheme.outline));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              _selectedIds.isEmpty
+                  ? 'Select (tap to toggle)'
+                  : '${_selectedIds.length} selected',
+              style: theme.textTheme.labelMedium
+                  ?.copyWith(color: theme.colorScheme.secondary),
+            ),
+            const Spacer(),
+            TextButton(
+              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+              onPressed: () => setState(
+                  () => _selectedIds = options.map((o) => o.id).toSet()),
+              child: const Text('All'),
+            ),
+            if (_selectedIds.isNotEmpty)
+              TextButton(
+                style:
+                    TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                onPressed: () => setState(() => _selectedIds = {}),
+                child: const Text('Clear'),
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: options.map((opt) {
+            final selected = _selectedIds.contains(opt.id);
+            return FilterChip(
+              label: Text(opt.label),
+              selected: selected,
+              onSelected: (v) => setState(() {
+                if (v) {
+                  _selectedIds = {..._selectedIds, opt.id};
+                } else {
+                  _selectedIds = _selectedIds.difference({opt.id});
+                }
+              }),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 

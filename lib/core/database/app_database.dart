@@ -294,9 +294,7 @@ class AppDatabase extends _$AppDatabase {
   Future<List<Word>> searchWordsByName(String query) {
     if (query.trim().isEmpty) return Future.value([]);
     final q = '%${query.trim().toLowerCase()}%';
-    return (select(words)
-          ..where((w) => w.name.lower().like(q)))
-        .get();
+    return (select(words)..where((w) => w.name.lower().like(q))).get();
   }
 
   Stream<List<Word>> watchAllWords() => select(words).watch();
