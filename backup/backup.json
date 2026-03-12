@@ -139,7 +139,7 @@
     {
       "id": 18,
       "classId": 1,
-      "name": "Bai 18",
+      "name": "Bai 18 - Updated",
       "sortOrder": 17,
       "createdAt": "2026-03-05T21:33:08.000"
     },
@@ -6342,7 +6342,7 @@
       "meaning": "Quá sức, không thể",
       "example": "むりを しないで ください。",
       "imagePath": null,
-      "isActive": false,
+      "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6666,7 +6666,7 @@
       "meaning": "Dần dần",
       "example": "だんだん あたたかく なります。",
       "imagePath": null,
-      "isActive": false,
+      "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6675,7 +6675,7 @@
       "meaning": "Sắp",
       "example": "もうすぐ なつやすみ です。",
       "imagePath": null,
-      "isActive": false,
+      "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6684,7 +6684,7 @@
       "meaning": "Nhờ ơn (anh/chị)",
       "example": "おかげさまで げんき です。",
       "imagePath": null,
-      "isActive": false,
+      "isActive": true,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6729,7 +6729,7 @@
       "meaning": "Tham khảo ý kiến",
       "example": "せんせいに そうだんします。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6738,7 +6738,7 @@
       "meaning": "Chuyển nhà",
       "example": "らいげつ ひっこしします。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6756,7 +6756,7 @@
       "meaning": "Dẫn đi",
       "example": "こどもを こうえんに つれていきます。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6765,7 +6765,7 @@
       "meaning": "Dẫn đến",
       "example": "ともだちを うちに つれてきます。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6774,7 +6774,7 @@
       "meaning": "Nhớ lại",
       "example": "こどもの ときを おもいだします。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6792,7 +6792,7 @@
       "meaning": "Dọn dẹp",
       "example": "へやを かたづけます。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6801,7 +6801,7 @@
       "meaning": "Sửa chữa",
       "example": "じてんしゃを なおします。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6810,7 +6810,7 @@
       "meaning": "Cứng",
       "example": "この にくは かたい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6819,7 +6819,7 @@
       "meaning": "Mềm",
       "example": "この パンは やわらかい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6828,7 +6828,7 @@
       "meaning": "Kinh nghiệm",
       "example": "いい けいけんを しました。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6837,7 +6837,7 @@
       "meaning": "Sức lực",
       "example": "ちからが つよい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6846,7 +6846,7 @@
       "meaning": "Phổ biến, được yêu thích",
       "example": "この うたは にんきが あります。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6855,7 +6855,7 @@
       "meaning": "Quê, nông thôn",
       "example": "いなかに すんでいます。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6864,7 +6864,7 @@
       "meaning": "Kỷ niệm",
       "example": "たのしい おもいでが あります。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6873,7 +6873,7 @@
       "meaning": "Tết (Nhật Bản)",
       "example": "おしょうがつに くにへ かえります。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6900,7 +6900,7 @@
       "meaning": "Kế hoạch",
       "example": "なつやすみの けいかくを たてます。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6909,7 +6909,7 @@
       "meaning": "Kimono",
       "example": "きものを きた ことが あります。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6927,7 +6927,7 @@
       "meaning": "Cắm hoa",
       "example": "いけばなは にほんの ぶんか です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6936,7 +6936,7 @@
       "meaning": "Gạo",
       "example": "にほんの こめは おいしい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6945,7 +6945,7 @@
       "meaning": "Gần đây",
       "example": "さいきん いそがしい です。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6972,7 +6972,7 @@
       "meaning": "Đã từng ~",
       "example": "ふじさんに のぼった ことが あります。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6981,7 +6981,7 @@
       "meaning": "Làm ~ và ~ (liệt kê)",
       "example": "にちようびは ほんを よんだり テレビを みたり します。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -6990,7 +6990,7 @@
       "meaning": "Đã rồi",
       "example": "もう ひるごはんを たべましたか。",
       "imagePath": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-03-05T21:33:09.000"
     },
     {
@@ -9359,6 +9359,96 @@
       "imagePath": null,
       "isActive": true,
       "createdAt": "2026-03-08T13:58:55.000"
+    },
+    {
+      "id": 1018,
+      "name": "ねむい",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:46:12.000"
+    },
+    {
+      "id": 1019,
+      "name": "つよい",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:46:24.000"
+    },
+    {
+      "id": 1020,
+      "name": "よわい",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:47:00.000"
+    },
+    {
+      "id": 1021,
+      "name": "れんしゅう",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:47:16.000"
+    },
+    {
+      "id": 1022,
+      "name": "ゴルフ",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:47:32.000"
+    },
+    {
+      "id": 1023,
+      "name": "すもう",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:47:42.000"
+    },
+    {
+      "id": 1024,
+      "name": "ひ",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:48:06.000"
+    },
+    {
+      "id": 1025,
+      "name": "ちょうし",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:48:28.000"
+    },
+    {
+      "id": 1026,
+      "name": "かんばい",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:50:08.000"
+    },
+    {
+      "id": 1027,
+      "name": "からだにいい",
+      "meaning": "",
+      "example": "",
+      "imagePath": null,
+      "isActive": true,
+      "createdAt": "2026-03-11T06:51:22.000"
     }
   ],
   "wordGroupLinks": [
@@ -11878,16 +11968,6 @@
       "sortOrder": 21
     },
     {
-      "wordId": 510,
-      "groupId": 13,
-      "sortOrder": 22
-    },
-    {
-      "wordId": 511,
-      "groupId": 13,
-      "sortOrder": 23
-    },
-    {
       "wordId": 512,
       "groupId": 13,
       "sortOrder": 24
@@ -12618,11 +12698,6 @@
       "sortOrder": 34000000
     },
     {
-      "wordId": 678,
-      "groupId": 17,
-      "sortOrder": 35000000
-    },
-    {
       "wordId": 679,
       "groupId": 17,
       "sortOrder": 36000000
@@ -12655,157 +12730,142 @@
     {
       "wordId": 688,
       "groupId": 18,
-      "sortOrder": 1
+      "sortOrder": 1000000
     },
     {
       "wordId": 689,
       "groupId": 18,
-      "sortOrder": 2
+      "sortOrder": 2000000
     },
     {
       "wordId": 690,
       "groupId": 18,
-      "sortOrder": 3
+      "sortOrder": 3000000
     },
     {
       "wordId": 691,
       "groupId": 18,
-      "sortOrder": 4
+      "sortOrder": 4000000
     },
     {
       "wordId": 692,
       "groupId": 18,
-      "sortOrder": 5
+      "sortOrder": 5000000
     },
     {
       "wordId": 693,
       "groupId": 18,
-      "sortOrder": 6
+      "sortOrder": 6000000
     },
     {
       "wordId": 694,
       "groupId": 18,
-      "sortOrder": 7
+      "sortOrder": 7000000
     },
     {
       "wordId": 695,
       "groupId": 18,
-      "sortOrder": 8
+      "sortOrder": 8000000
     },
     {
       "wordId": 696,
       "groupId": 18,
-      "sortOrder": 9
+      "sortOrder": 9000000
     },
     {
       "wordId": 697,
       "groupId": 18,
-      "sortOrder": 10
+      "sortOrder": 10000000
     },
     {
       "wordId": 698,
       "groupId": 18,
-      "sortOrder": 11
+      "sortOrder": 11000000
     },
     {
       "wordId": 699,
       "groupId": 18,
-      "sortOrder": 12
+      "sortOrder": 12000000
     },
     {
       "wordId": 700,
       "groupId": 18,
-      "sortOrder": 13
+      "sortOrder": 13000000
     },
     {
       "wordId": 701,
       "groupId": 18,
-      "sortOrder": 14
+      "sortOrder": 14000000
     },
     {
       "wordId": 702,
       "groupId": 18,
-      "sortOrder": 15
+      "sortOrder": 15000000
     },
     {
       "wordId": 703,
       "groupId": 18,
-      "sortOrder": 16
+      "sortOrder": 16000000
     },
     {
       "wordId": 704,
       "groupId": 18,
-      "sortOrder": 17
+      "sortOrder": 17000000
     },
     {
       "wordId": 705,
       "groupId": 18,
-      "sortOrder": 18
+      "sortOrder": 18000000
     },
     {
       "wordId": 706,
       "groupId": 18,
-      "sortOrder": 19
+      "sortOrder": 19000000
     },
     {
       "wordId": 707,
       "groupId": 18,
-      "sortOrder": 20
+      "sortOrder": 20000000
     },
     {
       "wordId": 708,
       "groupId": 18,
-      "sortOrder": 21
+      "sortOrder": 21000000
     },
     {
       "wordId": 709,
       "groupId": 18,
-      "sortOrder": 22
+      "sortOrder": 43500000
     },
     {
       "wordId": 710,
       "groupId": 18,
-      "sortOrder": 23
+      "sortOrder": 23000000
     },
     {
       "wordId": 711,
       "groupId": 18,
-      "sortOrder": 24
+      "sortOrder": 24000000
     },
     {
       "wordId": 712,
       "groupId": 18,
-      "sortOrder": 25
+      "sortOrder": 25000000
     },
     {
       "wordId": 713,
       "groupId": 18,
-      "sortOrder": 26
-    },
-    {
-      "wordId": 714,
-      "groupId": 18,
-      "sortOrder": 27
-    },
-    {
-      "wordId": 715,
-      "groupId": 18,
-      "sortOrder": 28
-    },
-    {
-      "wordId": 716,
-      "groupId": 18,
-      "sortOrder": 29
+      "sortOrder": 26000000
     },
     {
       "wordId": 717,
       "groupId": 18,
-      "sortOrder": 30
+      "sortOrder": 30000000
     },
     {
       "wordId": 718,
       "groupId": 18,
-      "sortOrder": 31
+      "sortOrder": 31000000
     },
     {
       "wordId": 719,
@@ -12815,147 +12875,147 @@
     {
       "wordId": 720,
       "groupId": 19,
-      "sortOrder": 1
+      "sortOrder": 1000000
     },
     {
       "wordId": 721,
       "groupId": 19,
-      "sortOrder": 2
+      "sortOrder": 2000000
     },
     {
       "wordId": 722,
       "groupId": 19,
-      "sortOrder": 3
+      "sortOrder": 3000000
     },
     {
       "wordId": 723,
       "groupId": 19,
-      "sortOrder": 4
+      "sortOrder": 4000000
     },
     {
       "wordId": 724,
       "groupId": 19,
-      "sortOrder": 5
+      "sortOrder": 5000000
     },
     {
       "wordId": 725,
       "groupId": 19,
-      "sortOrder": 6
+      "sortOrder": 6000000
     },
     {
       "wordId": 726,
       "groupId": 19,
-      "sortOrder": 7
+      "sortOrder": 7000000
     },
     {
       "wordId": 727,
       "groupId": 19,
-      "sortOrder": 8
+      "sortOrder": 8000000
     },
     {
       "wordId": 728,
       "groupId": 19,
-      "sortOrder": 9
+      "sortOrder": 9000000
     },
     {
       "wordId": 729,
       "groupId": 19,
-      "sortOrder": 10
+      "sortOrder": 10000000
     },
     {
       "wordId": 730,
       "groupId": 19,
-      "sortOrder": 11
+      "sortOrder": 11000000
     },
     {
       "wordId": 731,
       "groupId": 19,
-      "sortOrder": 12
+      "sortOrder": 12000000
     },
     {
       "wordId": 732,
       "groupId": 19,
-      "sortOrder": 13
+      "sortOrder": 13000000
     },
     {
       "wordId": 733,
       "groupId": 19,
-      "sortOrder": 14
+      "sortOrder": 14000000
     },
     {
       "wordId": 734,
       "groupId": 19,
-      "sortOrder": 15
+      "sortOrder": 15000000
     },
     {
       "wordId": 735,
       "groupId": 19,
-      "sortOrder": 16
+      "sortOrder": 16000000
     },
     {
       "wordId": 736,
       "groupId": 19,
-      "sortOrder": 17
+      "sortOrder": 17000000
     },
     {
       "wordId": 737,
       "groupId": 19,
-      "sortOrder": 18
+      "sortOrder": 18000000
     },
     {
       "wordId": 740,
       "groupId": 19,
-      "sortOrder": 21
+      "sortOrder": 19000000
     },
     {
       "wordId": 741,
       "groupId": 19,
-      "sortOrder": 22
+      "sortOrder": 20000000
     },
     {
       "wordId": 742,
       "groupId": 19,
-      "sortOrder": 23
+      "sortOrder": 21000000
     },
     {
       "wordId": 743,
       "groupId": 19,
-      "sortOrder": 24
+      "sortOrder": 22000000
     },
     {
       "wordId": 744,
       "groupId": 19,
-      "sortOrder": 25
+      "sortOrder": 23000000
     },
     {
       "wordId": 745,
       "groupId": 19,
-      "sortOrder": 26
+      "sortOrder": 24000000
     },
     {
       "wordId": 746,
       "groupId": 19,
-      "sortOrder": 27
+      "sortOrder": 25000000
     },
     {
       "wordId": 747,
       "groupId": 19,
-      "sortOrder": 28
+      "sortOrder": 26000000
     },
     {
       "wordId": 748,
       "groupId": 19,
-      "sortOrder": 29
+      "sortOrder": 27000000
     },
     {
       "wordId": 749,
       "groupId": 19,
-      "sortOrder": 30
+      "sortOrder": 28000000
     },
     {
       "wordId": 750,
       "groupId": 19,
-      "sortOrder": 31
+      "sortOrder": 29000000
     },
     {
       "wordId": 751,
@@ -13096,11 +13156,6 @@
       "wordId": 778,
       "groupId": 20,
       "sortOrder": 27
-    },
-    {
-      "wordId": 779,
-      "groupId": 20,
-      "sortOrder": 28
     },
     {
       "wordId": 780,
@@ -14330,97 +14385,97 @@
     {
       "wordId": 664,
       "groupId": 18,
-      "sortOrder": 32
+      "sortOrder": 4500000
     },
     {
       "wordId": 1000,
       "groupId": 18,
-      "sortOrder": 33
+      "sortOrder": 4750000
     },
     {
       "wordId": 1001,
       "groupId": 18,
-      "sortOrder": 34
+      "sortOrder": 4875000
     },
     {
       "wordId": 660,
       "groupId": 18,
-      "sortOrder": 35
+      "sortOrder": 4937500
     },
     {
       "wordId": 1003,
       "groupId": 18,
-      "sortOrder": 37
+      "sortOrder": 12500000
     },
     {
       "wordId": 1004,
       "groupId": 18,
-      "sortOrder": 38
+      "sortOrder": 12750000
     },
     {
       "wordId": 671,
       "groupId": 18,
-      "sortOrder": 40
+      "sortOrder": 37000000
     },
     {
       "wordId": 804,
       "groupId": 18,
-      "sortOrder": 41
+      "sortOrder": 38000000
     },
     {
       "wordId": 1006,
       "groupId": 18,
-      "sortOrder": 42
+      "sortOrder": 39000000
     },
     {
       "wordId": 738,
       "groupId": 18,
-      "sortOrder": 43
+      "sortOrder": 40000000
     },
     {
       "wordId": 739,
       "groupId": 18,
-      "sortOrder": 44
+      "sortOrder": 41000000
     },
     {
       "wordId": 1007,
       "groupId": 18,
-      "sortOrder": 45
+      "sortOrder": 42000000
     },
     {
       "wordId": 1008,
       "groupId": 18,
-      "sortOrder": 46
+      "sortOrder": 43000000
     },
     {
       "wordId": 1010,
       "groupId": 18,
-      "sortOrder": 48
+      "sortOrder": 44000000
     },
     {
       "wordId": 1011,
       "groupId": 18,
-      "sortOrder": 49
+      "sortOrder": 45000000
     },
     {
       "wordId": 1012,
       "groupId": 18,
-      "sortOrder": 50
+      "sortOrder": 46000000
     },
     {
       "wordId": 681,
       "groupId": 18,
-      "sortOrder": 51
+      "sortOrder": 47000000
     },
     {
       "wordId": 683,
       "groupId": 18,
-      "sortOrder": 52
+      "sortOrder": 48000000
     },
     {
       "wordId": 682,
       "groupId": 18,
-      "sortOrder": 53
+      "sortOrder": 49000000
     },
     {
       "wordId": 1013,
@@ -14466,6 +14521,91 @@
       "wordId": 37,
       "groupId": 15,
       "sortOrder": 78000004
+    },
+    {
+      "wordId": 510,
+      "groupId": 19,
+      "sortOrder": 1500000
+    },
+    {
+      "wordId": 511,
+      "groupId": 19,
+      "sortOrder": 1750000
+    },
+    {
+      "wordId": 1018,
+      "groupId": 19,
+      "sortOrder": 31000000
+    },
+    {
+      "wordId": 1019,
+      "groupId": 19,
+      "sortOrder": 32000000
+    },
+    {
+      "wordId": 1020,
+      "groupId": 19,
+      "sortOrder": 33000000
+    },
+    {
+      "wordId": 1021,
+      "groupId": 19,
+      "sortOrder": 34000000
+    },
+    {
+      "wordId": 1022,
+      "groupId": 19,
+      "sortOrder": 35000000
+    },
+    {
+      "wordId": 1023,
+      "groupId": 19,
+      "sortOrder": 36000000
+    },
+    {
+      "wordId": 1024,
+      "groupId": 19,
+      "sortOrder": 37000000
+    },
+    {
+      "wordId": 1025,
+      "groupId": 19,
+      "sortOrder": 38000000
+    },
+    {
+      "wordId": 714,
+      "groupId": 19,
+      "sortOrder": 39000000
+    },
+    {
+      "wordId": 715,
+      "groupId": 19,
+      "sortOrder": 40000000
+    },
+    {
+      "wordId": 716,
+      "groupId": 19,
+      "sortOrder": 41000000
+    },
+    {
+      "wordId": 779,
+      "groupId": 19,
+      "sortOrder": 42000000
+    },
+    {
+      "wordId": 1026,
+      "groupId": 19,
+      "sortOrder": 43000000
+    },
+    {
+      "wordId": 678,
+      "groupId": 19,
+      "sortOrder": 44000000
+    },
+    {
+      "wordId": 1027,
+      "groupId": 19,
+      "sortOrder": 45000000
     }
   ],
   "wordTypeLinks": [
