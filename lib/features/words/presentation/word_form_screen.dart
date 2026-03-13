@@ -174,6 +174,45 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
     if (mounted) context.pop();
   }
 
+  Future<void> _saveAndContinue() async {
+    if (!_formKey.currentState!.validate()) return;
+    final db = ref.read(databaseProvider);
+
+    final wordId = await db.insertWord(WordsCompanion.insert(
+      name: _nameCtrl.text.trim(),
+      meaning: _meaningCtrl.text.trim(),
+      example: Value(_exampleCtrl.text.trim()),
+      imagePath: Value(_imagePath),
+    ));
+
+    // Create links
+    for (final gId in _selectedGroupIds) {
+      await db.linkWordToGroup(wordId, gId);
+    }
+    for (final tId in _selectedTypeIds) {
+      await db.linkWordToType(wordId, tId);
+    }
+
+    if (mounted) {
+      // Reset form fields
+      _nameCtrl.clear();
+      _meaningCtrl.clear();
+      _exampleCtrl.clear();
+      _imagePath = null;
+      _nameMatches = [];
+      _duplicateInGroup = [];
+      _selectedTypeIds = widget.groupId != null ? {} : _selectedTypeIds;
+      setState(() {});
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Word created successfully'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.wordId != null;
@@ -349,13 +388,34 @@ class _WordFormScreenState extends ConsumerState<WordFormScreen> {
                         ),
                       ],
                       const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _save,
-                          child: Text(isEdit ? 'Update' : 'Create'),
+                      if (!isEdit)
+                        Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: _save,
+                                child: const Text('Create'),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                onPressed: _saveAndContinue,
+                                child: const Text('Create & Continue'),
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _save,
+                            child: const Text('Update'),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
