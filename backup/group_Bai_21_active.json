@@ -1,0 +1,247 @@
+{
+  "group_id": 21,
+  "group_name": "Bai 21",
+  "word_count": 40,
+  "words": [
+    {
+      "name": "おもいます",
+      "meaning": "Nghĩ",
+      "example": "あした あめが ふる と おもいます。👉 Tôi nghĩ ngày mai trời sẽ mưa.",
+      "isActive": true
+    },
+    {
+      "name": "いいます",
+      "meaning": "Nói, bảo",
+      "example": "せんせいは あした テストが ある と いいました。👉 Giáo viên nói ngày mai có bài kiểm tra.",
+      "isActive": true
+    },
+    {
+      "name": "かちます",
+      "meaning": "Thắng",
+      "example": "しあいに かちました。👉 Tôi đã thắng trận đấu.",
+      "isActive": true
+    },
+    {
+      "name": "まけます",
+      "meaning": "Thua",
+      "example": "しあいに まけました。👉 Tôi đã thua trận đấu.",
+      "isActive": true
+    },
+    {
+      "name": "おまつりがあります",
+      "meaning": "Có lễ hội",
+      "example": "あした まちで おまつりが あります。👉 Ngày mai trong thành phố có lễ hội.",
+      "isActive": true
+    },
+    {
+      "name": "やくにたちます",
+      "meaning": "Có ích, hữu dụng",
+      "example": "この ほんは やくにたちます。👉 Quyển sách này rất hữu ích.",
+      "isActive": true
+    },
+    {
+      "name": "うごきます",
+      "meaning": "Di chuyển, hoạt động",
+      "example": "くるまが うごきません。👉 Xe không hoạt động.",
+      "isActive": true
+    },
+    {
+      "name": "やめます",
+      "meaning": "Bỏ, nghỉ (việc)",
+      "example": "かいしゃを やめます。👉 Tôi nghỉ việc ở công ty.",
+      "isActive": true
+    },
+    {
+      "name": "きをつけます",
+      "meaning": "Chú ý, cẩn thận",
+      "example": "くるまに きをつけて ください。👉 Hãy cẩn thận xe cộ.",
+      "isActive": true
+    },
+    {
+      "name": "りゅうがくします",
+      "meaning": "Du học",
+      "example": "にほんへ りゅうがくします。👉 Tôi đi du học ở Nhật.",
+      "isActive": true
+    },
+    {
+      "name": "むだ（な）",
+      "meaning": "Vô ích, lãng phí",
+      "example": "じかんが むだ です。👉 Thời gian bị lãng phí.",
+      "isActive": true
+    },
+    {
+      "name": "ふべん（な）",
+      "meaning": "Bất tiện",
+      "example": "ここは ちょっと ふべん です。👉 Chỗ này hơi bất tiện.",
+      "isActive": true
+    },
+    {
+      "name": "すごい",
+      "meaning": "Tuyệt vời, ghê thật",
+      "example": "この アニメは すごい ですね。👉 Anime này thật tuyệt.",
+      "isActive": true
+    },
+    {
+      "name": "ほんとう",
+      "meaning": "Sự thật, thật sự",
+      "example": "ほんとうの ことを いって ください。👉 Hãy nói sự thật.",
+      "isActive": true
+    },
+    {
+      "name": "うそ",
+      "meaning": "Lời nói dối",
+      "example": "うそを いわないで ください。👉 Đừng nói dối.",
+      "isActive": true
+    },
+    {
+      "name": "じどうしゃ",
+      "meaning": "Xe hơi",
+      "example": "じどうしゃを かいました。👉 Tôi đã mua ô tô.",
+      "isActive": true
+    },
+    {
+      "name": "こうつう",
+      "meaning": "Giao thông",
+      "example": "とうきょうは こうつうが べんりです。👉 Giao thông ở Tokyo rất tiện.",
+      "isActive": true
+    },
+    {
+      "name": "ぶっか",
+      "meaning": "Giá cả, vật giá",
+      "example": "にほんは ぶっかが たかいです。👉 Giá cả ở Nhật cao.",
+      "isActive": true
+    },
+    {
+      "name": "ほうそう",
+      "meaning": "Phát sóng",
+      "example": "テレビで ニュースを ほうそうします。👉 Tin tức được phát trên TV.",
+      "isActive": true
+    },
+    {
+      "name": "ニュース",
+      "meaning": "Tin tức",
+      "example": "まいにち ニュースを みます。👉 Tôi xem tin tức mỗi ngày.",
+      "isActive": true
+    },
+    {
+      "name": "アニメ",
+      "meaning": "Anime (phim hoạt hình Nhật)",
+      "example": "アニメを よく みます。👉 Tôi thường xem anime.",
+      "isActive": true
+    },
+    {
+      "name": "マンガ",
+      "meaning": "Truyện tranh",
+      "example": "マンガを よみます。👉 Tôi đọc truyện tranh.",
+      "isActive": true
+    },
+    {
+      "name": "デザイン",
+      "meaning": "Thiết kế",
+      "example": "この デザインが すきです。👉 Tôi thích thiết kế này.",
+      "isActive": true
+    },
+    {
+      "name": "ゆめ",
+      "meaning": "Giấc mơ",
+      "example": "ゆめを みました。👉 Tôi đã mơ.",
+      "isActive": true
+    },
+    {
+      "name": "てんさい",
+      "meaning": "Thiên tài",
+      "example": "あの こどもは てんさいです。👉 Đứa trẻ đó là thiên tài.",
+      "isActive": true
+    },
+    {
+      "name": "しあい",
+      "meaning": "Trận đấu",
+      "example": "サッカーの しあいを みます。👉 Tôi xem trận bóng đá.",
+      "isActive": true
+    },
+    {
+      "name": "いけん",
+      "meaning": "Ý kiến",
+      "example": "あなたの いけんを ききたいです。👉 Tôi muốn nghe ý kiến của bạn.",
+      "isActive": true
+    },
+    {
+      "name": "はなし",
+      "meaning": "Câu chuyện, cuộc nói chuyện",
+      "example": "おもしろい はなしを ききました。👉 Tôi đã nghe một câu chuyện thú vị.",
+      "isActive": true
+    },
+    {
+      "name": "ちきゅう",
+      "meaning": "Trái đất",
+      "example": "ちきゅうは まるいです。👉 Trái đất hình tròn.",
+      "isActive": true
+    },
+    {
+      "name": "つき",
+      "meaning": "Mặt trăng",
+      "example": "きょうは つきが きれいです。👉 Hôm nay trăng đẹp.",
+      "isActive": true
+    },
+    {
+      "name": "さいきん",
+      "meaning": "Gần đây",
+      "example": "さいきん いそがしい です。👉 Gần đây tôi bận.",
+      "isActive": true
+    },
+    {
+      "name": "たぶん",
+      "meaning": "Có lẽ",
+      "example": "たぶん あした あめが ふります。👉 Có lẽ ngày mai sẽ mưa.",
+      "isActive": true
+    },
+    {
+      "name": "きっと",
+      "meaning": "Chắc chắn",
+      "example": "きっと だいじょうぶ です。👉 Chắc chắn sẽ ổn thôi.",
+      "isActive": true
+    },
+    {
+      "name": "ほんとうに",
+      "meaning": "Thật sự",
+      "example": "ほんとうに ありがとう ございます。👉 Thật sự cảm ơn bạn.",
+      "isActive": true
+    },
+    {
+      "name": "そんなに",
+      "meaning": "Đến mức đó, đến vậy",
+      "example": "そんなに たかく ありません。👉 Không đắt đến vậy.",
+      "isActive": true
+    },
+    {
+      "name": "～について",
+      "meaning": "Về, liên quan đến",
+      "example": "にほんの ぶんかについて はなします。👉 Tôi nói về văn hóa Nhật.",
+      "isActive": true
+    },
+    {
+      "name": "ひさしぶりですね",
+      "meaning": "Lâu rồi không gặp",
+      "example": "ひさしぶりですね。おげんきですか。👉 Lâu rồi không gặp, bạn khỏe không?",
+      "isActive": true
+    },
+    {
+      "name": "～でものみませんか",
+      "meaning": "Đi uống ~ không?",
+      "example": "コーヒーでも のみませんか。👉 Đi uống cà phê không?",
+      "isActive": true
+    },
+    {
+      "name": "もちろん",
+      "meaning": "Tất nhiên",
+      "example": "もちろん いいですよ。👉 Tất nhiên là được.",
+      "isActive": true
+    },
+    {
+      "name": "もうかえらないと。。。",
+      "meaning": "Tôi phải về rồi",
+      "example": "もう かえらないと。👉 Tôi phải về rồi.",
+      "isActive": true
+    }
+  ]
+}

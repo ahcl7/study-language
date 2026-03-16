@@ -1,0 +1,139 @@
+{
+  "group_id": 20,
+  "group_name": "Bai 20",
+  "word_count": 22,
+  "words": [
+    {
+      "name": "いります",
+      "meaning": "Cần",
+      "example": "ビザが いります。👉 Cần visa.",
+      "isActive": true
+    },
+    {
+      "name": "しらべます",
+      "meaning": "Tra cứu, tìm hiểu",
+      "example": "じしょで ことばを しらべます。👉 Tôi tra từ trong từ điển.",
+      "isActive": true
+    },
+    {
+      "name": "いろいろ（な）",
+      "meaning": "Nhiều loại, đa dạng",
+      "example": "いろいろな くにの ひとが います。👉 Có nhiều người từ nhiều quốc gia.",
+      "isActive": true
+    },
+    {
+      "name": "よかったら",
+      "meaning": "Nếu được / nếu bạn thấy ổn",
+      "example": "よかったら いっしょに いきませんか。👉 Nếu được thì đi cùng tôi nhé?",
+      "isActive": true
+    },
+    {
+      "name": "おなかがいっぱいです",
+      "meaning": "Tôi no rồi",
+      "example": "もう たべません。おなかが いっぱいです。👉 Tôi không ăn nữa, tôi no rồi.",
+      "isActive": true
+    },
+    {
+      "name": "～けど",
+      "meaning": "Nhưng (dùng trong hội thoại)",
+      "example": "いきたいですけど、いそがしいです。👉 Tôi muốn đi nhưng bận.",
+      "isActive": true
+    },
+    {
+      "name": "みんなで",
+      "meaning": "Cùng mọi người",
+      "example": "みんなで ごはんを たべます。👉 Mọi người cùng ăn cơm.",
+      "isActive": true
+    },
+    {
+      "name": "あっち",
+      "meaning": "Đằng kia",
+      "example": "トイレは あっちです。👉 Nhà vệ sinh ở đằng kia.",
+      "isActive": true
+    },
+    {
+      "name": "そっち",
+      "meaning": "Đằng đó",
+      "example": "そっちは にぎやかです。👉 Chỗ đó rất nhộn nhịp.",
+      "isActive": true
+    },
+    {
+      "name": "こっち",
+      "meaning": "Đằng này",
+      "example": "こっちへ きてください。👉 Hãy đến phía này.",
+      "isActive": true
+    },
+    {
+      "name": "おわり",
+      "meaning": "Kết thúc",
+      "example": "きょうの じゅぎょうは ここで おわりです。👉 Buổi học hôm nay kết thúc ở đây.",
+      "isActive": true
+    },
+    {
+      "name": "はじめ",
+      "meaning": "Bắt đầu",
+      "example": "しごとは 9じに はじまります。👉 Công việc bắt đầu lúc 9 giờ.",
+      "isActive": true
+    },
+    {
+      "name": "ビザ",
+      "meaning": "Visa",
+      "example": "にほんへ いくために ビザが いります。👉 Để đi Nhật cần visa.",
+      "isActive": true
+    },
+    {
+      "name": "きもの",
+      "meaning": "Kimono",
+      "example": "きものを きた ことが あります。👉 Tôi đã từng mặc kimono.",
+      "isActive": true
+    },
+    {
+      "name": "ことば",
+      "meaning": "Từ ngữ, ngôn ngữ",
+      "example": "にほんの ことばを ならいます。👉 Tôi học ngôn ngữ Nhật.",
+      "isActive": true
+    },
+    {
+      "name": "ううん",
+      "meaning": "Không (thân mật)",
+      "example": "ううん、ちがいます。👉 Không, không phải vậy.",
+      "isActive": true
+    },
+    {
+      "name": "うん",
+      "meaning": "Ừ / vâng (thân mật)",
+      "example": "うん、わかりました。👉 Ừ, tôi hiểu rồi.",
+      "isActive": true
+    },
+    {
+      "name": "～くん",
+      "meaning": "Cách gọi thân mật cho nam",
+      "example": "たなかくんは がくせいです。👉 Tanaka-kun là học sinh.",
+      "isActive": true
+    },
+    {
+      "name": "きみ",
+      "meaning": "Bạn (thân mật)",
+      "example": "きみは なにが すき？ 👉 Bạn thích gì?",
+      "isActive": true
+    },
+    {
+      "name": "ぼく",
+      "meaning": "Tôi (nam, thân mật)",
+      "example": "ぼくは がくせいです。👉 Tôi là học sinh.",
+      "isActive": true
+    },
+    {
+      "name": "しゅうりします",
+      "meaning": "Sửa chữa",
+      "example": "くるまを しゅうりします。👉 Tôi sửa xe.",
+      "isActive": true
+    },
+    {
+      "name": "どっち",
+      "meaning": "Cái nào (trong hai)",
+      "example": "りんごと バナナと どっちが すきですか。👉 Bạn thích táo hay chuối?",
+      "isActive": true
+    }
+  ]
+}
